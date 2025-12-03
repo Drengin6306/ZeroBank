@@ -43,6 +43,7 @@ func (l *GetUserInfoLogic) GetUserInfo() (resp *types.UserInfoResponse, err erro
 		}
 		resp = &types.UserInfoResponse{
 			AccountType: vars.AccountTypeIndividual,
+			Balance:     account.Balance,
 			UserInfo: &types.CustomerUserInfo{
 				AccountID: account.AccountId,
 				Name:      customer.Name,
@@ -57,6 +58,7 @@ func (l *GetUserInfoLogic) GetUserInfo() (resp *types.UserInfoResponse, err erro
 		}
 		resp = &types.UserInfoResponse{
 			AccountType: vars.AccountTypeEnterprise,
+			Balance:     account.Balance,
 			UserInfo: &types.EnterpriseUserInfo{
 				AccountID:  account.AccountId,
 				Name:       customer.CompanyName,

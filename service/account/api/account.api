@@ -51,6 +51,7 @@ type (
 		password string `json:"password"`
 	}
 	LoginResponse {
+		accountID string `json:"account_id"`
 		// token
 		token string `json:"token"`
 	}
@@ -59,6 +60,8 @@ type (
 		accountType int `json:"account_type" enum:"0,1"`
 		// 个人或企业用户信息
 		userInfo interface{} `json:"user_info"`
+		// 余额
+		balance float64 `json:"balance"`
 	}
 	CustomerUserInfo {
 		// 账户ID
@@ -83,26 +86,6 @@ type (
 		phone string `json:"phone"`
 		// 邮箱
 		email string `json:"email"`
-	}
-	BalanceResponse {
-		// 余额
-		balance float64 `json:"balance"`
-	}
-	DepositRequest {
-		// 金额
-		amount float64 `json:"amount"`
-	}
-	DepositResponse {
-		// 余额
-		balance float64 `json:"balance"`
-	}
-	WithdrawRequest {
-		// 金额
-		amount float64 `json:"amount"`
-	}
-	WithdrawResponse {
-		// 余额
-		balance float64 `json:"balance"`
 	}
 )
 
@@ -133,17 +116,5 @@ service account-api {
 	@doc "获取用户信息"
 	@handler getUserInfo
 	get /userinfo returns (UserInfoResponse)
-
-	@doc "获取用户余额"
-	@handler getBalance
-	get /balance returns (BalanceResponse)
-
-	@doc "存款"
-	@handler deposit
-	post /deposit (DepositRequest) returns (DepositResponse)
-
-	@doc "取款"
-	@handler withdraw
-	post /withdraw (WithdrawRequest) returns (WithdrawResponse)
 }
 

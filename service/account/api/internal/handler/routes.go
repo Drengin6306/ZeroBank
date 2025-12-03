@@ -40,28 +40,10 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				// 获取用户余额
-				Method:  http.MethodGet,
-				Path:    "/balance",
-				Handler: account.GetBalanceHandler(serverCtx),
-			},
-			{
-				// 存款
-				Method:  http.MethodPost,
-				Path:    "/deposit",
-				Handler: account.DepositHandler(serverCtx),
-			},
-			{
 				// 获取用户信息
 				Method:  http.MethodGet,
 				Path:    "/userinfo",
 				Handler: account.GetUserInfoHandler(serverCtx),
-			},
-			{
-				// 取款
-				Method:  http.MethodPost,
-				Path:    "/withdraw",
-				Handler: account.WithdrawHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

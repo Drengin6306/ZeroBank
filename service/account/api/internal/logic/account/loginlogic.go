@@ -44,7 +44,8 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 		return nil, err
 	}
 	resp = &types.LoginResponse{
-		Token: token,
+		AccountID: account.AccountId,
+		Token:     token,
 	}
 	return
 }

@@ -3,10 +3,6 @@
 
 package types
 
-type BalanceResponse struct {
-	Balance float64 `json:"balance"`
-}
-
 type CustomerRegisterRequest struct {
 	IdCard     string `json:"id_card"`
 	Name       string `json:"name"`
@@ -21,14 +17,6 @@ type CustomerUserInfo struct {
 	Name      string `json:"name"`
 	Email     string `json:"email"`
 	Phone     string `json:"phone"`
-}
-
-type DepositRequest struct {
-	Amount float64 `json:"amount"`
-}
-
-type DepositResponse struct {
-	Balance float64 `json:"balance"`
 }
 
 type EnterpriseRegisterRequest struct {
@@ -57,7 +45,8 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Token string `json:"token"`
+	AccountID string `json:"account_id"`
+	Token     string `json:"token"`
 }
 
 type RegisterResponse struct {
@@ -67,12 +56,5 @@ type RegisterResponse struct {
 type UserInfoResponse struct {
 	AccountType int         `json:"account_type" enum:"0,1"`
 	UserInfo    interface{} `json:"user_info"`
-}
-
-type WithdrawRequest struct {
-	Amount float64 `json:"amount"`
-}
-
-type WithdrawResponse struct {
-	Balance float64 `json:"balance"`
+	Balance     float64     `json:"balance"`
 }
