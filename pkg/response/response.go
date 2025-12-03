@@ -7,13 +7,17 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func Success(r *http.Request, w http.ResponseWriter, data interface{}) {
+func Success(w http.ResponseWriter, data interface{}) {
 	msg := errorx.NewSuccess()
 	msg.Data = data
 	httpx.WriteJson(w, http.StatusOK, msg)
 }
 
-func Error(r *http.Request, w http.ResponseWriter, code errorx.ResCode) {
-	msg := errorx.NewError(code)
-	httpx.WriteJson(w, http.StatusInternalServerError, msg)
+func Error(w http.ResponseWriter, err error) {
+	if e := err.(*errorx.ResponseError); e != nil {
+		httpx.WriteJson(w, http.StatusOK, e)
+		return
+	}
+	err = errorx.NewError(errorx.ErrServerBusy)
+	httpx.WriteJson(w, http.StatusOK, err)
 }

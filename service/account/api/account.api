@@ -1,0 +1,149 @@
+syntax = "v1"
+
+info (
+	title:       "Account Service"
+	description: "账户服务"
+	author:      "Drengin"
+	version:     "v1"
+)
+
+type (
+	CustomerRegisterRequest {
+		// 身份证
+		idCard string `json:"id_card"`
+		// 姓名
+		name string `json:"name"`
+		// 电话
+		phone string `json:"phone"`
+		// 邮箱
+		email string `json:"email"`
+		// 密码
+		password string `json:"password"`
+		// 确认密码
+		rePassword string `json:"re_password"`
+	}
+	EnterpriseRegisterRequest {
+		// 企业社会信用代码
+		creditCode string `json:"credit_code"`
+		// 企业名称
+		name string `json:"name"`
+		// 法人身份证
+		legalIdCard string `json:"legal_id_card"`
+		// 法人姓名
+		legalName string `json:"legal_name"`
+		// 电话
+		phone string `json:"phone"`
+		// 邮箱
+		email string `json:"email"`
+		// 密码
+		password string `json:"password"`
+		// 确认密码
+		rePassword string `json:"re_password"`
+	}
+	RegisterResponse {
+		// 账户ID
+		accountID string `json:"account_id"`
+	}
+	LoginRequest {
+		// 账号
+		accountID string `json:"account_id"`
+		// 密码
+		password string `json:"password"`
+	}
+	LoginResponse {
+		// token
+		token string `json:"token"`
+	}
+	UserInfoResponse {
+		// 账户类型 0:个人 1:企业
+		accountType int `json:"account_type" enum:"0,1"`
+		// 个人或企业用户信息
+		userInfo interface{} `json:"user_info"`
+	}
+	CustomerUserInfo {
+		// 账户ID
+		accountID string `json:"account_id"`
+		// 姓名
+		name string `json:"name"`
+		// 邮箱
+		email string `json:"email"`
+		// 电话
+		phone string `json:"phone"`
+	}
+	EnterpriseUserInfo {
+		// 账户ID
+		accountID string `json:"account_id"`
+		// 企业名称
+		name string `json:"name"`
+		// 企业社会信用代码
+		creditCode string `json:"credit_code"`
+		// 法人姓名
+		legalName string `json:"legal_name"`
+		// 电话
+		phone string `json:"phone"`
+		// 邮箱
+		email string `json:"email"`
+	}
+	BalanceResponse {
+		// 余额
+		balance float64 `json:"balance"`
+	}
+	DepositRequest {
+		// 金额
+		amount float64 `json:"amount"`
+	}
+	DepositResponse {
+		// 余额
+		balance float64 `json:"balance"`
+	}
+	WithdrawRequest {
+		// 金额
+		amount float64 `json:"amount"`
+	}
+	WithdrawResponse {
+		// 余额
+		balance float64 `json:"balance"`
+	}
+)
+
+@server (
+	group:  account
+	prefix: /v1
+)
+service account-api {
+	@doc "个人用户注册"
+	@handler register
+	post /register (CustomerRegisterRequest) returns (RegisterResponse)
+
+	@doc "企业用户注册"
+	@handler enterpriseRegister
+	post /enterprise/register (EnterpriseRegisterRequest) returns (RegisterResponse)
+
+	@doc "用户登录"
+	@handler login
+	post /login (LoginRequest) returns (LoginResponse)
+}
+
+@server (
+	group:  account
+	prefix: /v1
+	jwt:    Auth
+)
+service account-api {
+	@doc "获取用户信息"
+	@handler getUserInfo
+	get /userinfo returns (UserInfoResponse)
+
+	@doc "获取用户余额"
+	@handler getBalance
+	get /balance returns (BalanceResponse)
+
+	@doc "存款"
+	@handler deposit
+	post /deposit (DepositRequest) returns (DepositResponse)
+
+	@doc "取款"
+	@handler withdraw
+	post /withdraw (WithdrawRequest) returns (WithdrawResponse)
+}
+
