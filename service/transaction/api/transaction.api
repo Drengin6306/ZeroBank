@@ -1,0 +1,58 @@
+syntax = "v1"
+
+info (
+	title:       "Transaction Service"
+	description: "交易服务"
+	author:      "Drengin"
+	version:     "v1"
+)
+
+type (
+	TransactionRequest {
+		AccountTo string  `json:"account_to"`
+		Amount    float64 `json:"amount"`
+	}
+	TransactionResponse {
+		TransactionID string  `json:"transaction_id"`
+		AccountFrom   string  `json:"account_from"`
+		AccountTo     string  `json:"account_to"`
+		Amount        float64 `json:"amount"`
+	}
+	DepositRequest {
+		// 金额
+		amount float64 `json:"amount"`
+	}
+	DepositResponse {
+		TransactionID string `json:"transaction_id"`
+		AccountID     string `json:"account_id"`
+		// 余额
+		balance float64 `json:"balance"`
+	}
+	WithdrawRequest {
+		// 金额
+		amount float64 `json:"amount"`
+	}
+	WithdrawResponse {
+		TransactionID string `json:"transaction_id"`
+		AccountID     string `json:"account_id"`
+		// 余额
+		balance float64 `json:"balance"`
+	}
+)
+
+@server (
+	group:  "transaction"
+	prefix: /v1
+	jwt:    Auth
+)
+service transaction-api {
+	@handler TransactionHandler
+	post /transaction (TransactionRequest) returns (TransactionResponse)
+
+	@handler DepositHandler
+	post /deposit (DepositRequest) returns (DepositResponse)
+
+	@handler WithdrawHandler
+	post /withdraw (WithdrawRequest) returns (WithdrawResponse)
+}
+

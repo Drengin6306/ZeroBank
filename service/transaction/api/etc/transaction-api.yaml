@@ -1,6 +1,6 @@
-Name: account-api
+Name: transaction-api
 Host: 0.0.0.0
-Port: 8889
+Port: 8888
 
 DB:
   DataSource: root:123456@tcp(127.0.0.1:3307)/account?charset=utf8mb4&parseTime=True&loc=Local
@@ -8,6 +8,10 @@ DB:
 Auth:
   AccessSecret: "my-secret"
   AccessExpire: 86400
+
+RPC:
+  Account:
+    Target: consul://127.0.0.1:8500/account.rpc
 
 Log:
   Level: debug

@@ -9,12 +9,19 @@ import (
 	"github.com/yitter/idgenerator-go/idgen"
 )
 
-func NextId() string {
+func GenAccountID() string {
 	rawId := idgen.NextId()
 	// 在前面补0，补到17位
 	IdString := fmt.Sprintf("1%017d", rawId)
 	check := LuhnCheckDigit(IdString)
 	return IdString + strconv.Itoa(check)
+}
+
+func GenTransactionID() string {
+	rawId := idgen.NextId()
+	// 在前面补0，补到16位
+	IdString := fmt.Sprintf("2%016d", rawId)
+	return IdString
 }
 
 func init() {

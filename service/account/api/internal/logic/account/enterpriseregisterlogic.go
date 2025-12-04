@@ -49,7 +49,7 @@ func (l *EnterpriseRegisterLogic) EnterpriseRegister(req *types.EnterpriseRegist
 	if err != nil {
 		return nil, err
 	}
-	accountID := idgen.NextId()
+	accountID := idgen.GenAccountID()
 	account := &model.Account{
 		AccountId:   accountID,
 		Password:    password.Encrypt(req.Password),

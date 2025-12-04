@@ -48,7 +48,7 @@ func (l *RegisterLogic) Register(req *types.CustomerRegisterRequest) (resp *type
 	if err != nil {
 		return nil, err
 	}
-	accountID := idgen.NextId()
+	accountID := idgen.GenAccountID()
 	account := &model.Account{
 		AccountId:   accountID,
 		Password:    password.Encrypt(req.Password),
