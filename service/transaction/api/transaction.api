@@ -5,6 +5,7 @@ info (
 	description: "交易服务"
 	author:      "Drengin"
 	version:     "v1"
+	wrapCodeMsg: "true"
 )
 
 type (

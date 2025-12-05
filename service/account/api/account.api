@@ -5,6 +5,7 @@ info (
 	description: "账户服务"
 	author:      "Drengin"
 	version:     "v1"
+	wrapCodeMsg: "true"
 )
 
 type (
