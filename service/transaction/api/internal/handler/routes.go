@@ -22,8 +22,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/transaction",
-				Handler: transaction.TransactionHandler(serverCtx),
+				Path:    "/transfer",
+				Handler: transaction.TransferHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,

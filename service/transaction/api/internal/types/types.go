@@ -13,12 +13,12 @@ type DepositResponse struct {
 	Balance       float64 `json:"balance"`
 }
 
-type TransactionRequest struct {
+type TransferRequest struct {
 	AccountTo string  `json:"account_to"`
 	Amount    float64 `json:"amount"`
 }
 
-type TransactionResponse struct {
+type TransferResponse struct {
 	TransactionID string  `json:"transaction_id"`
 	AccountFrom   string  `json:"account_from"`
 	AccountTo     string  `json:"account_to"`

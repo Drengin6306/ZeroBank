@@ -8,11 +8,11 @@ info (
 )
 
 type (
-	TransactionRequest {
+	TransferRequest {
 		AccountTo string  `json:"account_to"`
 		Amount    float64 `json:"amount"`
 	}
-	TransactionResponse {
+	TransferResponse {
 		TransactionID string  `json:"transaction_id"`
 		AccountFrom   string  `json:"account_from"`
 		AccountTo     string  `json:"account_to"`
@@ -46,8 +46,8 @@ type (
 	jwt:    Auth
 )
 service transaction-api {
-	@handler TransactionHandler
-	post /transaction (TransactionRequest) returns (TransactionResponse)
+	@handler TransferHandler
+	post /transfer (TransferRequest) returns (TransferResponse)
 
 	@handler DepositHandler
 	post /deposit (DepositRequest) returns (DepositResponse)

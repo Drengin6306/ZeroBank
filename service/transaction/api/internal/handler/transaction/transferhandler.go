@@ -14,16 +14,16 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func TransactionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func TransferHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.TransactionRequest
+		var req types.TransferRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			response.Error(w, errorx.NewErrorWithMsg(errorx.ErrInvalidParams, err.Error()))
 			return
 		}
 
-		l := transaction.NewTransactionLogic(r.Context(), svcCtx)
-		resp, err := l.Transaction(&req)
+		l := transaction.NewTransferLogic(r.Context(), svcCtx)
+		resp, err := l.Transfer(&req)
 		if err != nil {
 			response.Error(w, err)
 		} else {

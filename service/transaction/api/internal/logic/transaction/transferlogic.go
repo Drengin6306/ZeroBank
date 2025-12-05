@@ -16,21 +16,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type TransactionLogic struct {
+type TransferLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewTransactionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *TransactionLogic {
-	return &TransactionLogic{
+func NewTransferLogic(ctx context.Context, svcCtx *svc.ServiceContext) *TransferLogic {
+	return &TransferLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *TransactionLogic) Transaction(req *types.TransactionRequest) (resp *types.TransactionResponse, err error) {
+func (l *TransferLogic) Transfer(req *types.TransferRequest) (resp *types.TransferResponse, err error) {
 	if req.Amount <= 0 {
 		return nil, errorx.NewError(errorx.ErrInvalidParams)
 	}
@@ -59,7 +59,7 @@ func (l *TransactionLogic) Transaction(req *types.TransactionRequest) (resp *typ
 		return nil, err
 	}
 	transactionID := idgen.GenTransactionID()
-	resp = &types.TransactionResponse{
+	resp = &types.TransferResponse{
 		TransactionID: transactionID,
 		AccountFrom:   accountFrom,
 		AccountTo:     req.AccountTo,
