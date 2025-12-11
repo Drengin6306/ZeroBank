@@ -5,6 +5,7 @@ package account
 
 import (
 	"context"
+	"errors"
 
 	"github.com/Drengin6306/ZeroBank/pkg/errorx"
 	"github.com/Drengin6306/ZeroBank/pkg/format"
@@ -38,7 +39,7 @@ func (l *EnterpriseRegisterLogic) EnterpriseRegister(req *types.EnterpriseRegist
 	if err == nil {
 		return nil, errorx.NewErrorWithMsg(errorx.ErrInvalidAccount, "企业信用代码已存在")
 	}
-	if err != nil && err != model.ErrNotFound {
+	if !errors.Is(err, model.ErrNotFound) {
 		return nil, err
 	}
 	// 企业用户注册

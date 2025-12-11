@@ -6,17 +6,22 @@ package svc
 import (
 	"github.com/Drengin6306/ZeroBank/service/account/rpc/account"
 	"github.com/Drengin6306/ZeroBank/service/transaction/api/internal/config"
+	"github.com/Drengin6306/ZeroBank/service/transaction/model"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
-	Config     config.Config
-	AccountRpc account.Account
+	Config                 config.Config
+	AccountRpc             account.Account
+	TransactionRecordModel model.TransactionRecordModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	conn := sqlx.NewMysql(c.DB.DataSource)
 	return &ServiceContext{
-		Config:     c,
-		AccountRpc: account.NewAccount(zrpc.MustNewClient(c.RPC.Account)),
+		Config:                 c,
+		AccountRpc:             account.NewAccount(zrpc.MustNewClient(c.RPC.Account)),
+		TransactionRecordModel: model.NewTransactionRecordModel(conn),
 	}
 }

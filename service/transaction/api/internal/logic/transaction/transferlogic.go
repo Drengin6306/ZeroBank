@@ -5,6 +5,7 @@ package transaction
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/Drengin6306/ZeroBank/pkg/errorx"
 	"github.com/Drengin6306/ZeroBank/pkg/idgen"
@@ -12,6 +13,7 @@ import (
 	"github.com/Drengin6306/ZeroBank/service/account/rpc/account"
 	"github.com/Drengin6306/ZeroBank/service/transaction/api/internal/svc"
 	"github.com/Drengin6306/ZeroBank/service/transaction/api/internal/types"
+	"github.com/Drengin6306/ZeroBank/service/transaction/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -34,6 +36,17 @@ func (l *TransferLogic) Transfer(req *types.TransferRequest) (resp *types.Transf
 	if req.Amount <= 0 {
 		return nil, errorx.NewError(errorx.ErrInvalidParams)
 	}
+
+	exists, err := l.svcCtx.AccountRpc.IsAccountExist(l.ctx, &account.AccountInfoRequest{
+		AccountId: req.AccountTo,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if !exists.Exist {
+		return nil, errorx.NewError(errorx.ErrAccountNotFound)
+	}
+
 	accountFrom := l.ctx.Value(vars.AccountKey).(string)
 	balanceFrom, err := l.svcCtx.AccountRpc.QueryAccountBalance(l.ctx, &account.QueryAccountBalanceRequest{
 		AccountId: accountFrom,
@@ -59,6 +72,18 @@ func (l *TransferLogic) Transfer(req *types.TransferRequest) (resp *types.Transf
 		return nil, err
 	}
 	transactionID := idgen.GenTransactionID()
+	// 记录交易流水
+	_, err = l.svcCtx.TransactionRecordModel.Insert(l.ctx, &model.TransactionRecord{
+		TransactionId:   transactionID,
+		AccountFrom:     accountFrom,
+		AccountTo:       sql.NullString{String: req.AccountTo, Valid: true},
+		Amount:          req.Amount,
+		TransactionType: vars.TransactionTypeTransfer,
+		Status:          vars.TransactionStatusSuccess,
+	})
+	if err != nil {
+		return nil, err
+	}
 	resp = &types.TransferResponse{
 		TransactionID: transactionID,
 		AccountFrom:   accountFrom,

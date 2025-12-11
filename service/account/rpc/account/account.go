@@ -22,6 +22,7 @@ type (
 	DeductBalanceRequest        = proto.DeductBalanceRequest
 	DeductBalanceResponse       = proto.DeductBalanceResponse
 	EnterpriseUserInfo          = proto.EnterpriseUserInfo
+	IsAccountExistResponse      = proto.IsAccountExistResponse
 	QueryAccountBalanceRequest  = proto.QueryAccountBalanceRequest
 	QueryAccountBalanceResponse = proto.QueryAccountBalanceResponse
 
@@ -30,6 +31,7 @@ type (
 		QueryAccountBalance(ctx context.Context, in *QueryAccountBalanceRequest, opts ...grpc.CallOption) (*QueryAccountBalanceResponse, error)
 		DeductBalance(ctx context.Context, in *DeductBalanceRequest, opts ...grpc.CallOption) (*DeductBalanceResponse, error)
 		AddBalance(ctx context.Context, in *AddBalanceRequest, opts ...grpc.CallOption) (*AddBalanceResponse, error)
+		IsAccountExist(ctx context.Context, in *AccountInfoRequest, opts ...grpc.CallOption) (*IsAccountExistResponse, error)
 	}
 
 	defaultAccount struct {
@@ -61,4 +63,9 @@ func (m *defaultAccount) DeductBalance(ctx context.Context, in *DeductBalanceReq
 func (m *defaultAccount) AddBalance(ctx context.Context, in *AddBalanceRequest, opts ...grpc.CallOption) (*AddBalanceResponse, error) {
 	client := proto.NewAccountClient(m.cli.Conn())
 	return client.AddBalance(ctx, in, opts...)
+}
+
+func (m *defaultAccount) IsAccountExist(ctx context.Context, in *AccountInfoRequest, opts ...grpc.CallOption) (*IsAccountExistResponse, error) {
+	client := proto.NewAccountClient(m.cli.Conn())
+	return client.IsAccountExist(ctx, in, opts...)
 }

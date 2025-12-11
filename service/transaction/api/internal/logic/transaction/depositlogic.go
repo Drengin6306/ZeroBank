@@ -12,6 +12,7 @@ import (
 	"github.com/Drengin6306/ZeroBank/service/account/rpc/account"
 	"github.com/Drengin6306/ZeroBank/service/transaction/api/internal/svc"
 	"github.com/Drengin6306/ZeroBank/service/transaction/api/internal/types"
+	"github.com/Drengin6306/ZeroBank/service/transaction/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -45,6 +46,17 @@ func (l *DepositLogic) Deposit(req *types.DepositRequest) (resp *types.DepositRe
 		return nil, err
 	}
 	transactionID := idgen.GenTransactionID()
+	// 记录交易流水
+	_, err = l.svcCtx.TransactionRecordModel.Insert(l.ctx, &model.TransactionRecord{
+		TransactionId:   transactionID,
+		AccountFrom:     accountID,
+		Amount:          req.Amount,
+		TransactionType: vars.TransactionTypeDeposit,
+		Status:          vars.TransactionStatusSuccess,
+	})
+	if err != nil {
+		return nil, err
+	}
 	resp = &types.DepositResponse{
 		TransactionID: transactionID,
 		AccountID:     accountID,

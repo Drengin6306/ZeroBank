@@ -64,6 +64,10 @@ message AddBalanceResponse {
   double balance = 2;
 }
 
+message IsAccountExistResponse {
+  bool exist = 1;
+}
+
 service Account {
   rpc GetAccountInfo(AccountInfoRequest) returns (AccountInfoResponse);
   rpc QueryAccountBalance(QueryAccountBalanceRequest)
@@ -71,4 +75,5 @@ service Account {
 
   rpc DeductBalance(DeductBalanceRequest) returns (DeductBalanceResponse);
   rpc AddBalance(AddBalanceRequest) returns (AddBalanceResponse);
+  rpc IsAccountExist(AccountInfoRequest) returns (IsAccountExistResponse);
 }

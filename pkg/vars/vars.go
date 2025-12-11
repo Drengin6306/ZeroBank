@@ -8,4 +8,11 @@ const (
 	AccountStatusFrozen = 1
 
 	AccountKey = "account"
+
+	TransactionTypeTransfer = 0
+	TransactionTypeDeposit  = 1
+	TransactionTypeWithdraw = 2
+
+	TransactionStatusFailed  = 0
+	TransactionStatusSuccess = 1
 )

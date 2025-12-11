@@ -42,3 +42,8 @@ func (s *AccountServer) AddBalance(ctx context.Context, in *proto.AddBalanceRequ
 	l := logic.NewAddBalanceLogic(ctx, s.svcCtx)
 	return l.AddBalance(in)
 }
+
+func (s *AccountServer) IsAccountExist(ctx context.Context, in *proto.AccountInfoRequest) (*proto.IsAccountExistResponse, error) {
+	l := logic.NewIsAccountExistLogic(ctx, s.svcCtx)
+	return l.IsAccountExist(in)
+}
