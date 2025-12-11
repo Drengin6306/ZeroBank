@@ -6,9 +6,11 @@ package account
 import (
 	"context"
 
+	"github.com/Drengin6306/ZeroBank/pkg/errorx"
 	"github.com/Drengin6306/ZeroBank/pkg/vars"
 	"github.com/Drengin6306/ZeroBank/service/account/api/internal/svc"
 	"github.com/Drengin6306/ZeroBank/service/account/api/internal/types"
+	"github.com/Drengin6306/ZeroBank/service/account/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -33,6 +35,9 @@ func (l *GetUserInfoLogic) GetUserInfo() (resp *types.UserInfoResponse, err erro
 	accountID := l.ctx.Value(vars.AccountKey).(string)
 	account, err := l.svcCtx.AccountModel.FindOne(l.ctx, accountID)
 	if err != nil {
+		if err == model.ErrNotFound {
+			return nil, errorx.NewError(errorx.ErrAccountNotFound)
+		}
 		return nil, err
 	}
 	// 获取用户信息

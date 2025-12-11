@@ -6,6 +6,7 @@ package account
 import (
 	"context"
 
+	"github.com/Drengin6306/ZeroBank/pkg/errorx"
 	"github.com/Drengin6306/ZeroBank/pkg/format"
 	"github.com/Drengin6306/ZeroBank/pkg/idgen"
 	"github.com/Drengin6306/ZeroBank/pkg/password"
@@ -33,6 +34,14 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(req *types.CustomerRegisterRequest) (resp *types.RegisterResponse, err error) {
+	// 用户是否已存在
+	_, err = l.svcCtx.AccountModel.FindOne(l.ctx, req.IdCard)
+	if err != nil && err != model.ErrNotFound {
+		return nil, err
+	}
+	if err == nil {
+		return nil, errorx.NewErrorWithMsg(errorx.ErrInvalidAccount, "用户已存在")
+	}
 	// 个人用户注册
 	phoneNum, err := format.Format(req.Phone)
 	if err != nil {

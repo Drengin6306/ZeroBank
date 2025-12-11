@@ -12,6 +12,7 @@ import (
 	"github.com/Drengin6306/ZeroBank/pkg/password"
 	"github.com/Drengin6306/ZeroBank/service/account/api/internal/svc"
 	"github.com/Drengin6306/ZeroBank/service/account/api/internal/types"
+	"github.com/Drengin6306/ZeroBank/service/account/model"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -34,6 +35,9 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	// 用户登录
 	account, err := l.svcCtx.AccountModel.FindOne(l.ctx, req.AccountID)
 	if err != nil {
+		if err == model.ErrNotFound {
+			return nil, errorx.NewError(errorx.ErrAccountNotFound)
+		}
 		return nil, err
 	}
 	if !password.Verify(req.Password, account.Password) {

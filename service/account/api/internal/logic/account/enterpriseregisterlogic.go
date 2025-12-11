@@ -6,6 +6,7 @@ package account
 import (
 	"context"
 
+	"github.com/Drengin6306/ZeroBank/pkg/errorx"
 	"github.com/Drengin6306/ZeroBank/pkg/format"
 	"github.com/Drengin6306/ZeroBank/pkg/idgen"
 	"github.com/Drengin6306/ZeroBank/pkg/password"
@@ -32,6 +33,14 @@ func NewEnterpriseRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *EnterpriseRegisterLogic) EnterpriseRegister(req *types.EnterpriseRegisterRequest) (resp *types.RegisterResponse, err error) {
+	// 检查企业信用代码是否已存在
+	_, err = l.svcCtx.CustomerEnterpriseModel.FindOne(l.ctx, req.CreditCode)
+	if err == nil {
+		return nil, errorx.NewErrorWithMsg(errorx.ErrInvalidAccount, "企业信用代码已存在")
+	}
+	if err != nil && err != model.ErrNotFound {
+		return nil, err
+	}
 	// 企业用户注册
 	phoneNum, err := format.Format(req.Phone)
 	if err != nil {
