@@ -54,10 +54,19 @@ func (l *RegisterLogic) Register(req *types.CustomerRegisterRequest) (resp *type
 		Email:  req.Email,
 		Phone:  phoneNum,
 	}
-	_, err = l.svcCtx.CustomerIndividualModel.Insert(l.ctx, customer)
-	if err != nil {
+
+	// 用户不存在则创建用户
+	_, err = l.svcCtx.CustomerIndividualModel.FindOne(l.ctx, req.IdCard)
+	if err == model.ErrNotFound {
+		_, err = l.svcCtx.CustomerIndividualModel.Insert(l.ctx, customer)
+		if err != nil {
+			return nil, err
+		}
+	} else if err != nil {
 		return nil, err
 	}
+
+	// 创建账户
 	accountID := idgen.GenAccountID()
 	account := &model.Account{
 		AccountId:   accountID,
