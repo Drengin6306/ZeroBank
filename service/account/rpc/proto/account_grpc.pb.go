@@ -19,11 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Account_GetAccountInfo_FullMethodName      = "/proto.Account/GetAccountInfo"
-	Account_QueryAccountBalance_FullMethodName = "/proto.Account/QueryAccountBalance"
-	Account_DeductBalance_FullMethodName       = "/proto.Account/DeductBalance"
-	Account_AddBalance_FullMethodName          = "/proto.Account/AddBalance"
-	Account_IsAccountExist_FullMethodName      = "/proto.Account/IsAccountExist"
+	Account_GetAccountInfo_FullMethodName      = "/account.Account/GetAccountInfo"
+	Account_QueryAccountBalance_FullMethodName = "/account.Account/QueryAccountBalance"
+	Account_DeductBalance_FullMethodName       = "/account.Account/DeductBalance"
+	Account_AddBalance_FullMethodName          = "/account.Account/AddBalance"
+	Account_IsAccountExist_FullMethodName      = "/account.Account/IsAccountExist"
 )
 
 // AccountClient is the client API for Account service.
@@ -244,7 +244,7 @@ func _Account_IsAccountExist_Handler(srv interface{}, ctx context.Context, dec f
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Account_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.Account",
+	ServiceName: "account.Account",
 	HandlerType: (*AccountServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

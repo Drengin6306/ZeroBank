@@ -681,15 +681,15 @@ var File_account_proto protoreflect.FileDescriptor
 
 const file_account_proto_rawDesc = "" +
 	"\n" +
-	"\raccount.proto\x12\x05proto\"3\n" +
+	"\raccount.proto\x12\aaccount\"3\n" +
 	"\x12AccountInfoRequest\x12\x1d\n" +
 	"\n" +
-	"account_id\x18\x01 \x01(\tR\taccountId\"\xf1\x01\n" +
+	"account_id\x18\x01 \x01(\tR\taccountId\"\xf5\x01\n" +
 	"\x13AccountInfoResponse\x12 \n" +
 	"\vaccountType\x18\x01 \x01(\x05R\vaccountType\x12\x18\n" +
-	"\abalance\x18\x02 \x01(\x01R\abalance\x12E\n" +
-	"\x10customerUserInfo\x18\x03 \x01(\v2\x17.proto.CustomerUserInfoH\x00R\x10customerUserInfo\x12K\n" +
-	"\x12enterpriseUserInfo\x18\x04 \x01(\v2\x19.proto.EnterpriseUserInfoH\x00R\x12enterpriseUserInfoB\n" +
+	"\abalance\x18\x02 \x01(\x01R\abalance\x12G\n" +
+	"\x10customerUserInfo\x18\x03 \x01(\v2\x19.account.CustomerUserInfoH\x00R\x10customerUserInfo\x12M\n" +
+	"\x12enterpriseUserInfo\x18\x04 \x01(\v2\x1b.account.EnterpriseUserInfoH\x00R\x12enterpriseUserInfoB\n" +
 	"\n" +
 	"\buserInfo\"p\n" +
 	"\x10CustomerUserInfo\x12\x1c\n" +
@@ -730,14 +730,14 @@ const file_account_proto_rawDesc = "" +
 	"account_id\x18\x01 \x01(\tR\taccountId\x12\x18\n" +
 	"\abalance\x18\x02 \x01(\x01R\abalance\".\n" +
 	"\x16IsAccountExistResponse\x12\x14\n" +
-	"\x05exist\x18\x01 \x01(\bR\x05exist2\x8b\x03\n" +
-	"\aAccount\x12G\n" +
-	"\x0eGetAccountInfo\x12\x19.proto.AccountInfoRequest\x1a\x1a.proto.AccountInfoResponse\x12\\\n" +
-	"\x13QueryAccountBalance\x12!.proto.QueryAccountBalanceRequest\x1a\".proto.QueryAccountBalanceResponse\x12J\n" +
-	"\rDeductBalance\x12\x1b.proto.DeductBalanceRequest\x1a\x1c.proto.DeductBalanceResponse\x12A\n" +
+	"\x05exist\x18\x01 \x01(\bR\x05exist2\x9f\x03\n" +
+	"\aAccount\x12K\n" +
+	"\x0eGetAccountInfo\x12\x1b.account.AccountInfoRequest\x1a\x1c.account.AccountInfoResponse\x12`\n" +
+	"\x13QueryAccountBalance\x12#.account.QueryAccountBalanceRequest\x1a$.account.QueryAccountBalanceResponse\x12N\n" +
+	"\rDeductBalance\x12\x1d.account.DeductBalanceRequest\x1a\x1e.account.DeductBalanceResponse\x12E\n" +
 	"\n" +
-	"AddBalance\x12\x18.proto.AddBalanceRequest\x1a\x19.proto.AddBalanceResponse\x12J\n" +
-	"\x0eIsAccountExist\x12\x19.proto.AccountInfoRequest\x1a\x1d.proto.IsAccountExistResponseB\bZ\x06/protob\x06proto3"
+	"AddBalance\x12\x1a.account.AddBalanceRequest\x1a\x1b.account.AddBalanceResponse\x12N\n" +
+	"\x0eIsAccountExist\x12\x1b.account.AccountInfoRequest\x1a\x1f.account.IsAccountExistResponseB\bZ\x06/protob\x06proto3"
 
 var (
 	file_account_proto_rawDescOnce sync.Once
@@ -753,31 +753,31 @@ func file_account_proto_rawDescGZIP() []byte {
 
 var file_account_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_account_proto_goTypes = []any{
-	(*AccountInfoRequest)(nil),          // 0: proto.AccountInfoRequest
-	(*AccountInfoResponse)(nil),         // 1: proto.AccountInfoResponse
-	(*CustomerUserInfo)(nil),            // 2: proto.CustomerUserInfo
-	(*EnterpriseUserInfo)(nil),          // 3: proto.EnterpriseUserInfo
-	(*QueryAccountBalanceRequest)(nil),  // 4: proto.QueryAccountBalanceRequest
-	(*QueryAccountBalanceResponse)(nil), // 5: proto.QueryAccountBalanceResponse
-	(*DeductBalanceRequest)(nil),        // 6: proto.DeductBalanceRequest
-	(*DeductBalanceResponse)(nil),       // 7: proto.DeductBalanceResponse
-	(*AddBalanceRequest)(nil),           // 8: proto.AddBalanceRequest
-	(*AddBalanceResponse)(nil),          // 9: proto.AddBalanceResponse
-	(*IsAccountExistResponse)(nil),      // 10: proto.IsAccountExistResponse
+	(*AccountInfoRequest)(nil),          // 0: account.AccountInfoRequest
+	(*AccountInfoResponse)(nil),         // 1: account.AccountInfoResponse
+	(*CustomerUserInfo)(nil),            // 2: account.CustomerUserInfo
+	(*EnterpriseUserInfo)(nil),          // 3: account.EnterpriseUserInfo
+	(*QueryAccountBalanceRequest)(nil),  // 4: account.QueryAccountBalanceRequest
+	(*QueryAccountBalanceResponse)(nil), // 5: account.QueryAccountBalanceResponse
+	(*DeductBalanceRequest)(nil),        // 6: account.DeductBalanceRequest
+	(*DeductBalanceResponse)(nil),       // 7: account.DeductBalanceResponse
+	(*AddBalanceRequest)(nil),           // 8: account.AddBalanceRequest
+	(*AddBalanceResponse)(nil),          // 9: account.AddBalanceResponse
+	(*IsAccountExistResponse)(nil),      // 10: account.IsAccountExistResponse
 }
 var file_account_proto_depIdxs = []int32{
-	2,  // 0: proto.AccountInfoResponse.customerUserInfo:type_name -> proto.CustomerUserInfo
-	3,  // 1: proto.AccountInfoResponse.enterpriseUserInfo:type_name -> proto.EnterpriseUserInfo
-	0,  // 2: proto.Account.GetAccountInfo:input_type -> proto.AccountInfoRequest
-	4,  // 3: proto.Account.QueryAccountBalance:input_type -> proto.QueryAccountBalanceRequest
-	6,  // 4: proto.Account.DeductBalance:input_type -> proto.DeductBalanceRequest
-	8,  // 5: proto.Account.AddBalance:input_type -> proto.AddBalanceRequest
-	0,  // 6: proto.Account.IsAccountExist:input_type -> proto.AccountInfoRequest
-	1,  // 7: proto.Account.GetAccountInfo:output_type -> proto.AccountInfoResponse
-	5,  // 8: proto.Account.QueryAccountBalance:output_type -> proto.QueryAccountBalanceResponse
-	7,  // 9: proto.Account.DeductBalance:output_type -> proto.DeductBalanceResponse
-	9,  // 10: proto.Account.AddBalance:output_type -> proto.AddBalanceResponse
-	10, // 11: proto.Account.IsAccountExist:output_type -> proto.IsAccountExistResponse
+	2,  // 0: account.AccountInfoResponse.customerUserInfo:type_name -> account.CustomerUserInfo
+	3,  // 1: account.AccountInfoResponse.enterpriseUserInfo:type_name -> account.EnterpriseUserInfo
+	0,  // 2: account.Account.GetAccountInfo:input_type -> account.AccountInfoRequest
+	4,  // 3: account.Account.QueryAccountBalance:input_type -> account.QueryAccountBalanceRequest
+	6,  // 4: account.Account.DeductBalance:input_type -> account.DeductBalanceRequest
+	8,  // 5: account.Account.AddBalance:input_type -> account.AddBalanceRequest
+	0,  // 6: account.Account.IsAccountExist:input_type -> account.AccountInfoRequest
+	1,  // 7: account.Account.GetAccountInfo:output_type -> account.AccountInfoResponse
+	5,  // 8: account.Account.QueryAccountBalance:output_type -> account.QueryAccountBalanceResponse
+	7,  // 9: account.Account.DeductBalance:output_type -> account.DeductBalanceResponse
+	9,  // 10: account.Account.AddBalance:output_type -> account.AddBalanceResponse
+	10, // 11: account.Account.IsAccountExist:output_type -> account.IsAccountExistResponse
 	7,  // [7:12] is the sub-list for method output_type
 	2,  // [2:7] is the sub-list for method input_type
 	2,  // [2:2] is the sub-list for extension type_name
