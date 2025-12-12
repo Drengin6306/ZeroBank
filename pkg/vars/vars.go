@@ -15,4 +15,10 @@ const (
 
 	TransactionStatusFailed  = 0
 	TransactionStatusSuccess = 1
+
+	RiskControlAccountFrozen       = 1 // 账户冻结
+	RiskControlDailyTransferLimit  = 2 // 日转账限额
+	RiskControlSingleTransferLimit = 3 // 单笔转账限额
+	RiskControlDailyWithdrawLimit  = 4 // 日提现限额
+	RiskControlSingleWithdrawLimit = 5 // 单笔提现限额
 )

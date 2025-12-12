@@ -5,6 +5,7 @@ go 1.25.4
 require (
 	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/nyaruka/phonenumbers v1.6.7
+	github.com/redis/go-redis/v9 v9.16.0
 	github.com/yitter/idgenerator-go v1.3.3
 	github.com/zeromicro/go-zero v1.9.3
 	github.com/zeromicro/zero-contrib/zrpc/registry/consul v0.0.0-20251020121907-c2e4c4911576
@@ -66,7 +67,6 @@ require (
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.62.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
-	github.com/redis/go-redis/v9 v9.16.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.15 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.15 // indirect
