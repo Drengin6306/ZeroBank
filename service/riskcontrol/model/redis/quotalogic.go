@@ -10,7 +10,7 @@ import (
 var luaScript string
 
 // CheckDailyTransferLimit 每日转账限额检查
-func (m *defaultRedisModel) CheckDailyTransferLimit(accountID string, amount int64, dailyLimit int64) (bool, error) {
+func (m *defaultRedisModel) CheckDailyTransferLimit(accountID string, amount float64, dailyLimit float64) (bool, error) {
 	key := getDayTransferLimitKey(accountID)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -27,7 +27,7 @@ func (m *defaultRedisModel) CheckDailyTransferLimit(accountID string, amount int
 }
 
 // CheckDailyWithdrawLimit 每日取款限额检查
-func (m *defaultRedisModel) CheckDailyWithdrawLimit(accountID string, amount int64, dailyLimit int64) (bool, error) {
+func (m *defaultRedisModel) CheckDailyWithdrawLimit(accountID string, amount float64, dailyLimit float64) (bool, error) {
 	key := getDayWithdrawLimitKey(accountID)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()

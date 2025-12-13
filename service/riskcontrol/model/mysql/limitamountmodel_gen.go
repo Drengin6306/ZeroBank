@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
+	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
 )
@@ -21,18 +23,22 @@ var (
 	limitAmountRows                = strings.Join(limitAmountFieldNames, ",")
 	limitAmountRowsExpectAutoSet   = strings.Join(stringx.Remove(limitAmountFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	limitAmountRowsWithPlaceHolder = strings.Join(stringx.Remove(limitAmountFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
+
+	cacheRiskControlLimitAmountIdPrefix                   = "cache:riskControl:limitAmount:id:"
+	cacheRiskControlLimitAmountAccountTypeLimitTypePrefix = "cache:riskControl:limitAmount:accountType:limitType:"
 )
 
 type (
 	limitAmountModel interface {
 		Insert(ctx context.Context, data *LimitAmount) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*LimitAmount, error)
+		FindOneByAccountTypeLimitType(ctx context.Context, accountType int64, limitType int64) (*LimitAmount, error)
 		Update(ctx context.Context, data *LimitAmount) error
 		Delete(ctx context.Context, id int64) error
 	}
 
 	defaultLimitAmountModel struct {
-		conn  sqlx.SqlConn
+		sqlc.CachedConn
 		table string
 	}
 
@@ -45,27 +51,59 @@ type (
 	}
 )
 
-func newLimitAmountModel(conn sqlx.SqlConn) *defaultLimitAmountModel {
+func newLimitAmountModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) *defaultLimitAmountModel {
 	return &defaultLimitAmountModel{
-		conn:  conn,
-		table: "`limit_amount`",
+		CachedConn: sqlc.NewConn(conn, c, opts...),
+		table:      "`limit_amount`",
 	}
 }
 
 func (m *defaultLimitAmountModel) Delete(ctx context.Context, id int64) error {
-	query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
-	_, err := m.conn.ExecCtx(ctx, query, id)
+	data, err := m.FindOne(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	riskControlLimitAmountAccountTypeLimitTypeKey := fmt.Sprintf("%s%v:%v", cacheRiskControlLimitAmountAccountTypeLimitTypePrefix, data.AccountType, data.LimitType)
+	riskControlLimitAmountIdKey := fmt.Sprintf("%s%v", cacheRiskControlLimitAmountIdPrefix, id)
+	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
+		return conn.ExecCtx(ctx, query, id)
+	}, riskControlLimitAmountAccountTypeLimitTypeKey, riskControlLimitAmountIdKey)
 	return err
 }
 
 func (m *defaultLimitAmountModel) FindOne(ctx context.Context, id int64) (*LimitAmount, error) {
-	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", limitAmountRows, m.table)
+	riskControlLimitAmountIdKey := fmt.Sprintf("%s%v", cacheRiskControlLimitAmountIdPrefix, id)
 	var resp LimitAmount
-	err := m.conn.QueryRowCtx(ctx, &resp, query, id)
+	err := m.QueryRowCtx(ctx, &resp, riskControlLimitAmountIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+		query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", limitAmountRows, m.table)
+		return conn.QueryRowCtx(ctx, v, query, id)
+	})
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlx.ErrNotFound:
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultLimitAmountModel) FindOneByAccountTypeLimitType(ctx context.Context, accountType int64, limitType int64) (*LimitAmount, error) {
+	riskControlLimitAmountAccountTypeLimitTypeKey := fmt.Sprintf("%s%v:%v", cacheRiskControlLimitAmountAccountTypeLimitTypePrefix, accountType, limitType)
+	var resp LimitAmount
+	err := m.QueryRowIndexCtx(ctx, &resp, riskControlLimitAmountAccountTypeLimitTypeKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where `account_type` = ? and `limit_type` = ? limit 1", limitAmountRows, m.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, accountType, limitType); err != nil {
+			return nil, err
+		}
+		return resp.Id, nil
+	}, m.queryPrimary)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err
@@ -73,15 +111,37 @@ func (m *defaultLimitAmountModel) FindOne(ctx context.Context, id int64) (*Limit
 }
 
 func (m *defaultLimitAmountModel) Insert(ctx context.Context, data *LimitAmount) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, limitAmountRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.AccountType, data.LimitType, data.Amount)
+	riskControlLimitAmountAccountTypeLimitTypeKey := fmt.Sprintf("%s%v:%v", cacheRiskControlLimitAmountAccountTypeLimitTypePrefix, data.AccountType, data.LimitType)
+	riskControlLimitAmountIdKey := fmt.Sprintf("%s%v", cacheRiskControlLimitAmountIdPrefix, data.Id)
+	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, limitAmountRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.AccountType, data.LimitType, data.Amount)
+	}, riskControlLimitAmountAccountTypeLimitTypeKey, riskControlLimitAmountIdKey)
 	return ret, err
 }
 
-func (m *defaultLimitAmountModel) Update(ctx context.Context, data *LimitAmount) error {
-	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, limitAmountRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.AccountType, data.LimitType, data.Amount, data.Id)
+func (m *defaultLimitAmountModel) Update(ctx context.Context, newData *LimitAmount) error {
+	data, err := m.FindOne(ctx, newData.Id)
+	if err != nil {
+		return err
+	}
+
+	riskControlLimitAmountAccountTypeLimitTypeKey := fmt.Sprintf("%s%v:%v", cacheRiskControlLimitAmountAccountTypeLimitTypePrefix, data.AccountType, data.LimitType)
+	riskControlLimitAmountIdKey := fmt.Sprintf("%s%v", cacheRiskControlLimitAmountIdPrefix, data.Id)
+	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, limitAmountRowsWithPlaceHolder)
+		return conn.ExecCtx(ctx, query, newData.AccountType, newData.LimitType, newData.Amount, newData.Id)
+	}, riskControlLimitAmountAccountTypeLimitTypeKey, riskControlLimitAmountIdKey)
 	return err
+}
+
+func (m *defaultLimitAmountModel) formatPrimary(primary any) string {
+	return fmt.Sprintf("%s%v", cacheRiskControlLimitAmountIdPrefix, primary)
+}
+
+func (m *defaultLimitAmountModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
+	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", limitAmountRows, m.table)
+	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 
 func (m *defaultLimitAmountModel) tableName() string {

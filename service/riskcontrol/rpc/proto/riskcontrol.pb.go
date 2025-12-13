@@ -26,8 +26,9 @@ type RiskCheckRequest struct {
 	TransactionId   string                 `protobuf:"bytes,1,opt,name=transaction_id,json=transactionId,proto3" json:"transaction_id,omitempty"`
 	AccountFrom     string                 `protobuf:"bytes,2,opt,name=account_from,json=accountFrom,proto3" json:"account_from,omitempty"`
 	AccountTo       string                 `protobuf:"bytes,3,opt,name=account_to,json=accountTo,proto3" json:"account_to,omitempty"`
-	Amount          float64                `protobuf:"fixed64,4,opt,name=amount,proto3" json:"amount,omitempty"`
-	TransactionType int32                  `protobuf:"varint,5,opt,name=transaction_type,json=transactionType,proto3" json:"transaction_type,omitempty"`
+	AccountType     int32                  `protobuf:"varint,4,opt,name=account_type,json=accountType,proto3" json:"account_type,omitempty"`
+	Amount          float64                `protobuf:"fixed64,5,opt,name=amount,proto3" json:"amount,omitempty"`
+	TransactionType int32                  `protobuf:"varint,6,opt,name=transaction_type,json=transactionType,proto3" json:"transaction_type,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -81,6 +82,13 @@ func (x *RiskCheckRequest) GetAccountTo() string {
 		return x.AccountTo
 	}
 	return ""
+}
+
+func (x *RiskCheckRequest) GetAccountType() int32 {
+	if x != nil {
+		return x.AccountType
+	}
+	return 0
 }
 
 func (x *RiskCheckRequest) GetAmount() float64 {
@@ -153,14 +161,15 @@ var File_riskcontrol_proto protoreflect.FileDescriptor
 
 const file_riskcontrol_proto_rawDesc = "" +
 	"\n" +
-	"\x11riskcontrol.proto\x12\vriskcontrol\"\xbe\x01\n" +
+	"\x11riskcontrol.proto\x12\vriskcontrol\"\xe1\x01\n" +
 	"\x10RiskCheckRequest\x12%\n" +
 	"\x0etransaction_id\x18\x01 \x01(\tR\rtransactionId\x12!\n" +
 	"\faccount_from\x18\x02 \x01(\tR\vaccountFrom\x12\x1d\n" +
 	"\n" +
-	"account_to\x18\x03 \x01(\tR\taccountTo\x12\x16\n" +
-	"\x06amount\x18\x04 \x01(\x01R\x06amount\x12)\n" +
-	"\x10transaction_type\x18\x05 \x01(\x05R\x0ftransactionType\"C\n" +
+	"account_to\x18\x03 \x01(\tR\taccountTo\x12!\n" +
+	"\faccount_type\x18\x04 \x01(\x05R\vaccountType\x12\x16\n" +
+	"\x06amount\x18\x05 \x01(\x01R\x06amount\x12)\n" +
+	"\x10transaction_type\x18\x06 \x01(\x05R\x0ftransactionType\"C\n" +
 	"\x11RiskCheckResponse\x12\x16\n" +
 	"\x06passed\x18\x01 \x01(\bR\x06passed\x12\x16\n" +
 	"\x06reason\x18\x02 \x01(\x05R\x06reason2g\n" +

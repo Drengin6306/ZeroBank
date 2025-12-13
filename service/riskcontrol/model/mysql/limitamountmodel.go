@@ -1,6 +1,9 @@
 package mysql
 
-import "github.com/zeromicro/go-zero/core/stores/sqlx"
+import (
+	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
+)
 
 var _ LimitAmountModel = (*customLimitAmountModel)(nil)
 
@@ -9,7 +12,6 @@ type (
 	// and implement the added methods in customLimitAmountModel.
 	LimitAmountModel interface {
 		limitAmountModel
-		withSession(session sqlx.Session) LimitAmountModel
 	}
 
 	customLimitAmountModel struct {
@@ -18,12 +20,8 @@ type (
 )
 
 // NewLimitAmountModel returns a model for the database table.
-func NewLimitAmountModel(conn sqlx.SqlConn) LimitAmountModel {
+func NewLimitAmountModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) LimitAmountModel {
 	return &customLimitAmountModel{
-		defaultLimitAmountModel: newLimitAmountModel(conn),
+		defaultLimitAmountModel: newLimitAmountModel(conn, c, opts...),
 	}
-}
-
-func (m *customLimitAmountModel) withSession(session sqlx.Session) LimitAmountModel {
-	return NewLimitAmountModel(sqlx.NewSqlConnFromSession(session))
 }

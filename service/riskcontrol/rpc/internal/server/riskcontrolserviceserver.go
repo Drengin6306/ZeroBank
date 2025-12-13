@@ -23,6 +23,7 @@ func NewRiskControlServiceServer(svcCtx *svc.ServiceContext) *RiskControlService
 	}
 }
 
+// 检查交易风险
 func (s *RiskControlServiceServer) CheckTransaction(ctx context.Context, in *proto.RiskCheckRequest) (*proto.RiskCheckResponse, error) {
 	l := logic.NewCheckTransactionLogic(ctx, s.svcCtx)
 	return l.CheckTransaction(in)

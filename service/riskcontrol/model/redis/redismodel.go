@@ -2,20 +2,20 @@ package redis
 
 import (
 	"context"
-	"strconv"
 	"time"
 
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type RedisConfig struct {
+type conf struct {
 	Host     string
-	Port     int
-	Username string
-	Password string
-	DB       int
+	Username string `json:",optional"`
+	Password string `json:",optional"`
+	DB       int    `json:",optional"`
 }
+
+type RedConf *conf
 
 type defaultRedisModel struct {
 	rdb *redis.Client
@@ -23,13 +23,13 @@ type defaultRedisModel struct {
 
 type RedisModel interface {
 	Close() error
-	CheckDailyTransferLimit(accountID string, amount int64, dailyLimit int64) (bool, error)
-	CheckDailyWithdrawLimit(accountID string, amount int64, dailyLimit int64) (bool, error)
+	CheckDailyTransferLimit(accountID string, amount float64, dailyLimit float64) (bool, error)
+	CheckDailyWithdrawLimit(accountID string, amount float64, dailyLimit float64) (bool, error)
 }
 
-func NewRedisModel(cfg *RedisConfig) RedisModel {
+func NewRedisModel(cfg RedConf) RedisModel {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     cfg.Host + ":" + strconv.Itoa(cfg.Port),
+		Addr:     cfg.Host,
 		Username: cfg.Username,
 		Password: cfg.Password,
 		DB:       cfg.DB,

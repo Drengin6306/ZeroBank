@@ -8,8 +8,9 @@ message RiskCheckRequest {
     string transaction_id = 1;
     string account_from = 2;
     string account_to = 3;
-    double amount = 4;
-    int32 transaction_type = 5;
+    int32 account_type = 4;
+    double amount = 5;
+    int32 transaction_type = 6;
 }
 message RiskCheckResponse {
     bool passed = 1;

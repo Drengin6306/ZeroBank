@@ -18,6 +18,7 @@ type (
 	RiskCheckResponse = proto.RiskCheckResponse
 
 	RiskControlService interface {
+		// 检查交易风险
 		CheckTransaction(ctx context.Context, in *RiskCheckRequest, opts ...grpc.CallOption) (*RiskCheckResponse, error)
 	}
 
@@ -32,6 +33,7 @@ func NewRiskControlService(cli zrpc.Client) RiskControlService {
 	}
 }
 
+// 检查交易风险
 func (m *defaultRiskControlService) CheckTransaction(ctx context.Context, in *RiskCheckRequest, opts ...grpc.CallOption) (*RiskCheckResponse, error) {
 	client := proto.NewRiskControlServiceClient(m.cli.Conn())
 	return client.CheckTransaction(ctx, in, opts...)

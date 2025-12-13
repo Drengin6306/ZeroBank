@@ -25,7 +25,10 @@ const (
 // RiskControlServiceClient is the client API for RiskControlService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// 风控服务
 type RiskControlServiceClient interface {
+	// 检查交易风险
 	CheckTransaction(ctx context.Context, in *RiskCheckRequest, opts ...grpc.CallOption) (*RiskCheckResponse, error)
 }
 
@@ -50,7 +53,10 @@ func (c *riskControlServiceClient) CheckTransaction(ctx context.Context, in *Ris
 // RiskControlServiceServer is the server API for RiskControlService service.
 // All implementations must embed UnimplementedRiskControlServiceServer
 // for forward compatibility.
+//
+// 风控服务
 type RiskControlServiceServer interface {
+	// 检查交易风险
 	CheckTransaction(context.Context, *RiskCheckRequest) (*RiskCheckResponse, error)
 	mustEmbedUnimplementedRiskControlServiceServer()
 }

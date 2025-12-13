@@ -16,6 +16,7 @@ const (
 	TransactionStatusFailed  = 0
 	TransactionStatusSuccess = 1
 
+	RiskControlPassed              = 0 // 风控通过
 	RiskControlAccountFrozen       = 1 // 账户冻结
 	RiskControlDailyTransferLimit  = 2 // 日转账限额
 	RiskControlSingleTransferLimit = 3 // 单笔转账限额
