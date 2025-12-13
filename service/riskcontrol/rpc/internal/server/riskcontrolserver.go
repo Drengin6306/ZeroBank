@@ -12,19 +12,19 @@ import (
 	"github.com/Drengin6306/ZeroBank/service/riskcontrol/rpc/proto"
 )
 
-type RiskControlServiceServer struct {
+type RiskControlServer struct {
 	svcCtx *svc.ServiceContext
-	proto.UnimplementedRiskControlServiceServer
+	proto.UnimplementedRiskControlServer
 }
 
-func NewRiskControlServiceServer(svcCtx *svc.ServiceContext) *RiskControlServiceServer {
-	return &RiskControlServiceServer{
+func NewRiskControlServer(svcCtx *svc.ServiceContext) *RiskControlServer {
+	return &RiskControlServer{
 		svcCtx: svcCtx,
 	}
 }
 
 // 检查交易风险
-func (s *RiskControlServiceServer) CheckTransaction(ctx context.Context, in *proto.RiskCheckRequest) (*proto.RiskCheckResponse, error) {
+func (s *RiskControlServer) CheckTransaction(ctx context.Context, in *proto.RiskCheckRequest) (*proto.RiskCheckResponse, error) {
 	l := logic.NewCheckTransactionLogic(ctx, s.svcCtx)
 	return l.CheckTransaction(in)
 }

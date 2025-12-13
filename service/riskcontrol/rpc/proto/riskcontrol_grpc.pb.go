@@ -19,107 +19,107 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	RiskControlService_CheckTransaction_FullMethodName = "/riskcontrol.RiskControlService/CheckTransaction"
+	RiskControl_CheckTransaction_FullMethodName = "/riskcontrol.RiskControl/CheckTransaction"
 )
 
-// RiskControlServiceClient is the client API for RiskControlService service.
+// RiskControlClient is the client API for RiskControl service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // 风控服务
-type RiskControlServiceClient interface {
+type RiskControlClient interface {
 	// 检查交易风险
 	CheckTransaction(ctx context.Context, in *RiskCheckRequest, opts ...grpc.CallOption) (*RiskCheckResponse, error)
 }
 
-type riskControlServiceClient struct {
+type riskControlClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewRiskControlServiceClient(cc grpc.ClientConnInterface) RiskControlServiceClient {
-	return &riskControlServiceClient{cc}
+func NewRiskControlClient(cc grpc.ClientConnInterface) RiskControlClient {
+	return &riskControlClient{cc}
 }
 
-func (c *riskControlServiceClient) CheckTransaction(ctx context.Context, in *RiskCheckRequest, opts ...grpc.CallOption) (*RiskCheckResponse, error) {
+func (c *riskControlClient) CheckTransaction(ctx context.Context, in *RiskCheckRequest, opts ...grpc.CallOption) (*RiskCheckResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RiskCheckResponse)
-	err := c.cc.Invoke(ctx, RiskControlService_CheckTransaction_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, RiskControl_CheckTransaction_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// RiskControlServiceServer is the server API for RiskControlService service.
-// All implementations must embed UnimplementedRiskControlServiceServer
+// RiskControlServer is the server API for RiskControl service.
+// All implementations must embed UnimplementedRiskControlServer
 // for forward compatibility.
 //
 // 风控服务
-type RiskControlServiceServer interface {
+type RiskControlServer interface {
 	// 检查交易风险
 	CheckTransaction(context.Context, *RiskCheckRequest) (*RiskCheckResponse, error)
-	mustEmbedUnimplementedRiskControlServiceServer()
+	mustEmbedUnimplementedRiskControlServer()
 }
 
-// UnimplementedRiskControlServiceServer must be embedded to have
+// UnimplementedRiskControlServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedRiskControlServiceServer struct{}
+type UnimplementedRiskControlServer struct{}
 
-func (UnimplementedRiskControlServiceServer) CheckTransaction(context.Context, *RiskCheckRequest) (*RiskCheckResponse, error) {
+func (UnimplementedRiskControlServer) CheckTransaction(context.Context, *RiskCheckRequest) (*RiskCheckResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckTransaction not implemented")
 }
-func (UnimplementedRiskControlServiceServer) mustEmbedUnimplementedRiskControlServiceServer() {}
-func (UnimplementedRiskControlServiceServer) testEmbeddedByValue()                            {}
+func (UnimplementedRiskControlServer) mustEmbedUnimplementedRiskControlServer() {}
+func (UnimplementedRiskControlServer) testEmbeddedByValue()                     {}
 
-// UnsafeRiskControlServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to RiskControlServiceServer will
+// UnsafeRiskControlServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to RiskControlServer will
 // result in compilation errors.
-type UnsafeRiskControlServiceServer interface {
-	mustEmbedUnimplementedRiskControlServiceServer()
+type UnsafeRiskControlServer interface {
+	mustEmbedUnimplementedRiskControlServer()
 }
 
-func RegisterRiskControlServiceServer(s grpc.ServiceRegistrar, srv RiskControlServiceServer) {
-	// If the following call pancis, it indicates UnimplementedRiskControlServiceServer was
+func RegisterRiskControlServer(s grpc.ServiceRegistrar, srv RiskControlServer) {
+	// If the following call pancis, it indicates UnimplementedRiskControlServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&RiskControlService_ServiceDesc, srv)
+	s.RegisterService(&RiskControl_ServiceDesc, srv)
 }
 
-func _RiskControlService_CheckTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RiskControl_CheckTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RiskCheckRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RiskControlServiceServer).CheckTransaction(ctx, in)
+		return srv.(RiskControlServer).CheckTransaction(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: RiskControlService_CheckTransaction_FullMethodName,
+		FullMethod: RiskControl_CheckTransaction_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RiskControlServiceServer).CheckTransaction(ctx, req.(*RiskCheckRequest))
+		return srv.(RiskControlServer).CheckTransaction(ctx, req.(*RiskCheckRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// RiskControlService_ServiceDesc is the grpc.ServiceDesc for RiskControlService service.
+// RiskControl_ServiceDesc is the grpc.ServiceDesc for RiskControl service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var RiskControlService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "riskcontrol.RiskControlService",
-	HandlerType: (*RiskControlServiceServer)(nil),
+var RiskControl_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "riskcontrol.RiskControl",
+	HandlerType: (*RiskControlServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CheckTransaction",
-			Handler:    _RiskControlService_CheckTransaction_Handler,
+			Handler:    _RiskControl_CheckTransaction_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

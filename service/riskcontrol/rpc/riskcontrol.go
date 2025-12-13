@@ -27,7 +27,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		proto.RegisterRiskControlServiceServer(grpcServer, server.NewRiskControlServiceServer(ctx))
+		proto.RegisterRiskControlServer(grpcServer, server.NewRiskControlServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

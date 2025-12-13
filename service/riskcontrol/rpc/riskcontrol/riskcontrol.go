@@ -2,7 +2,7 @@
 // goctl 1.9.2
 // Source: riskcontrol.proto
 
-package riskcontrolservice
+package riskcontrol
 
 import (
 	"context"
@@ -17,24 +17,24 @@ type (
 	RiskCheckRequest  = proto.RiskCheckRequest
 	RiskCheckResponse = proto.RiskCheckResponse
 
-	RiskControlService interface {
+	RiskControl interface {
 		// 检查交易风险
 		CheckTransaction(ctx context.Context, in *RiskCheckRequest, opts ...grpc.CallOption) (*RiskCheckResponse, error)
 	}
 
-	defaultRiskControlService struct {
+	defaultRiskControl struct {
 		cli zrpc.Client
 	}
 )
 
-func NewRiskControlService(cli zrpc.Client) RiskControlService {
-	return &defaultRiskControlService{
+func NewRiskControl(cli zrpc.Client) RiskControl {
+	return &defaultRiskControl{
 		cli: cli,
 	}
 }
 
 // 检查交易风险
-func (m *defaultRiskControlService) CheckTransaction(ctx context.Context, in *RiskCheckRequest, opts ...grpc.CallOption) (*RiskCheckResponse, error) {
-	client := proto.NewRiskControlServiceClient(m.cli.Conn())
+func (m *defaultRiskControl) CheckTransaction(ctx context.Context, in *RiskCheckRequest, opts ...grpc.CallOption) (*RiskCheckResponse, error) {
+	client := proto.NewRiskControlClient(m.cli.Conn())
 	return client.CheckTransaction(ctx, in, opts...)
 }

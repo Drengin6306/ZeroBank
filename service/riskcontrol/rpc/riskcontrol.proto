@@ -18,7 +18,7 @@ message RiskCheckResponse {
 }
 
 // 风控服务
-service RiskControlService {
+service RiskControl {
     // 检查交易风险
     rpc CheckTransaction (RiskCheckRequest) returns (RiskCheckResponse);
 }

@@ -172,8 +172,8 @@ const file_riskcontrol_proto_rawDesc = "" +
 	"\x10transaction_type\x18\x06 \x01(\x05R\x0ftransactionType\"C\n" +
 	"\x11RiskCheckResponse\x12\x16\n" +
 	"\x06passed\x18\x01 \x01(\bR\x06passed\x12\x16\n" +
-	"\x06reason\x18\x02 \x01(\x05R\x06reason2g\n" +
-	"\x12RiskControlService\x12Q\n" +
+	"\x06reason\x18\x02 \x01(\x05R\x06reason2`\n" +
+	"\vRiskControl\x12Q\n" +
 	"\x10CheckTransaction\x12\x1d.riskcontrol.RiskCheckRequest\x1a\x1e.riskcontrol.RiskCheckResponseB\bZ\x06/protob\x06proto3"
 
 var (
@@ -194,8 +194,8 @@ var file_riskcontrol_proto_goTypes = []any{
 	(*RiskCheckResponse)(nil), // 1: riskcontrol.RiskCheckResponse
 }
 var file_riskcontrol_proto_depIdxs = []int32{
-	0, // 0: riskcontrol.RiskControlService.CheckTransaction:input_type -> riskcontrol.RiskCheckRequest
-	1, // 1: riskcontrol.RiskControlService.CheckTransaction:output_type -> riskcontrol.RiskCheckResponse
+	0, // 0: riskcontrol.RiskControl.CheckTransaction:input_type -> riskcontrol.RiskCheckRequest
+	1, // 1: riskcontrol.RiskControl.CheckTransaction:output_type -> riskcontrol.RiskCheckResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
