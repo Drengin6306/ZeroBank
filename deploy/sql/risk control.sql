@@ -8,7 +8,7 @@ CREATE TABLE risk_record
     account_id     VARCHAR(20)    NOT NULL,
     transaction_id VARCHAR(20)    NOT NULL,
     risk_type      tinyint        NOT NULL, # 1:账户冻结 2:日转账限额 3:单笔转账限额 4:日提现限额 5:单笔提现限额
-    risk_value     DECIMAL(15, 2) NOT NULL,
+    amount     DECIMAL(15, 2) NOT NULL,
     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

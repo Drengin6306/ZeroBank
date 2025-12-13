@@ -18,6 +18,7 @@ type Config struct {
 		DataSource string
 	}
 	RPC struct {
-		Account zrpc.RpcClientConf
+		Account     zrpc.RpcClientConf
+		RiskControl zrpc.RpcClientConf
 	}
 }

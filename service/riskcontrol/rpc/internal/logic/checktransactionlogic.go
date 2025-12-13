@@ -112,6 +112,7 @@ done:
 			AccountId:     in.AccountFrom,
 			TransactionId: in.TransactionId,
 			RiskType:      int64(reason),
+			Amount:        in.Amount,
 		})
 		if err != nil {
 			return nil, err

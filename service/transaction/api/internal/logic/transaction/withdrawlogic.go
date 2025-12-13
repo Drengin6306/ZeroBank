@@ -10,6 +10,7 @@ import (
 	"github.com/Drengin6306/ZeroBank/pkg/idgen"
 	"github.com/Drengin6306/ZeroBank/pkg/vars"
 	"github.com/Drengin6306/ZeroBank/service/account/rpc/account"
+	"github.com/Drengin6306/ZeroBank/service/riskcontrol/rpc/riskcontrol"
 	"github.com/Drengin6306/ZeroBank/service/transaction/api/internal/svc"
 	"github.com/Drengin6306/ZeroBank/service/transaction/api/internal/types"
 	"github.com/Drengin6306/ZeroBank/service/transaction/model"
@@ -36,14 +37,31 @@ func (l *WithdrawLogic) Withdraw(req *types.WithdrawRequest) (resp *types.Withdr
 		return nil, errorx.NewError(errorx.ErrInvalidParams)
 	}
 	accountID := l.ctx.Value(vars.AccountKey).(string)
-	balance, err := l.svcCtx.AccountRpc.QueryAccountBalance(l.ctx, &account.QueryAccountBalanceRequest{
+	info, err := l.svcCtx.AccountRpc.GetAccountInfo(l.ctx, &account.AccountInfoRequest{
 		AccountId: accountID,
 	})
 	if err != nil {
 		return nil, err
 	}
-	if balance.Balance < req.Amount {
+	if info.GetBalance() < req.Amount {
 		return nil, errorx.NewError(errorx.ErrBalanceNotEnough)
+	}
+	transactionID := idgen.GenTransactionID()
+	// 风控检查
+	riskResp, err := l.svcCtx.RiskControlRpc.CheckTransaction(l.ctx, &riskcontrol.RiskCheckRequest{
+		AccountFrom:     accountID,
+		AccountType:     int32(info.GetAccountType()),
+		TransactionType: vars.TransactionTypeWithdraw,
+		TransactionId:   transactionID,
+		Amount:          req.Amount,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if !riskResp.Passed {
+		// 交易单号加拒绝原因
+		msg := "TransactionID: " + transactionID + ", Reason: " + riskResp.Reason
+		return nil, errorx.NewErrorWithMsg(errorx.ErrRiskControl, msg)
 	}
 	result, err := l.svcCtx.AccountRpc.DeductBalance(l.ctx, &account.DeductBalanceRequest{
 		AccountId: accountID,
@@ -52,7 +70,6 @@ func (l *WithdrawLogic) Withdraw(req *types.WithdrawRequest) (resp *types.Withdr
 	if err != nil {
 		return nil, err
 	}
-	transactionID := idgen.GenTransactionID()
 	// 记录交易流水
 	_, err = l.svcCtx.TransactionRecordModel.Insert(l.ctx, &model.TransactionRecord{
 		TransactionId:   transactionID,

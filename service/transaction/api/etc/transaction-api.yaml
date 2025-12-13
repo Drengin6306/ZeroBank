@@ -12,6 +12,8 @@ Auth:
 RPC:
   Account:
     Target: consul://127.0.0.1:8500/account.rpc
+  RiskControl:
+    Target: consul://127.0.0.1:8500/riskcontrol.rpc
 
 Log:
   Level: debug
