@@ -41,7 +41,6 @@ type (
 		AccountId     string    `db:"account_id"`
 		TransactionId string    `db:"transaction_id"`
 		RiskType      int64     `db:"risk_type"`
-		RiskValue     float64   `db:"risk_value"`
 		CreatedAt     time.Time `db:"created_at"`
 	}
 )
@@ -74,14 +73,14 @@ func (m *defaultRiskRecordModel) FindOne(ctx context.Context, id int64) (*RiskRe
 }
 
 func (m *defaultRiskRecordModel) Insert(ctx context.Context, data *RiskRecord) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, riskRecordRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.AccountId, data.TransactionId, data.RiskType, data.RiskValue)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, riskRecordRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.AccountId, data.TransactionId, data.RiskType)
 	return ret, err
 }
 
 func (m *defaultRiskRecordModel) Update(ctx context.Context, data *RiskRecord) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, riskRecordRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.AccountId, data.TransactionId, data.RiskType, data.RiskValue, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.AccountId, data.TransactionId, data.RiskType, data.Id)
 	return err
 }
 

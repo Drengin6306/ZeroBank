@@ -108,7 +108,7 @@ func (x *RiskCheckRequest) GetTransactionType() int32 {
 type RiskCheckResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Passed        bool                   `protobuf:"varint,1,opt,name=passed,proto3" json:"passed,omitempty"`
-	Reason        int32                  `protobuf:"varint,2,opt,name=reason,proto3" json:"reason,omitempty"`
+	Reason        string                 `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,11 +150,11 @@ func (x *RiskCheckResponse) GetPassed() bool {
 	return false
 }
 
-func (x *RiskCheckResponse) GetReason() int32 {
+func (x *RiskCheckResponse) GetReason() string {
 	if x != nil {
 		return x.Reason
 	}
-	return 0
+	return ""
 }
 
 var File_riskcontrol_proto protoreflect.FileDescriptor
@@ -172,7 +172,7 @@ const file_riskcontrol_proto_rawDesc = "" +
 	"\x10transaction_type\x18\x06 \x01(\x05R\x0ftransactionType\"C\n" +
 	"\x11RiskCheckResponse\x12\x16\n" +
 	"\x06passed\x18\x01 \x01(\bR\x06passed\x12\x16\n" +
-	"\x06reason\x18\x02 \x01(\x05R\x06reason2`\n" +
+	"\x06reason\x18\x02 \x01(\tR\x06reason2`\n" +
 	"\vRiskControl\x12Q\n" +
 	"\x10CheckTransaction\x12\x1d.riskcontrol.RiskCheckRequest\x1a\x1e.riskcontrol.RiskCheckResponseB\bZ\x06/protob\x06proto3"
 

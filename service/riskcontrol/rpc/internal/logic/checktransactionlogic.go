@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Drengin6306/ZeroBank/pkg/vars"
 	"github.com/Drengin6306/ZeroBank/service/riskcontrol/model/mysql"
@@ -25,71 +26,117 @@ func NewCheckTransactionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *CheckTransactionLogic) CheckTransaction(in *proto.RiskCheckRequest) (*proto.RiskCheckResponse, error) {
-	var (
-		singleLimitAmount *mysql.LimitAmount
-		dailyLimitAmount  *mysql.LimitAmount
-		err               error
-		passed            bool = true
-	)
-	if in.TransactionType == vars.TransactionTypeWithdraw {
-		// 提现交易类型的限额检查逻辑
-		singleLimitAmount, err = l.svcCtx.LimitAmountModel.FindOneByAccountTypeLimitType(l.ctx, int64(in.AccountType), vars.RiskControlSingleWithdrawLimit)
+func (l *CheckTransactionLogic) CheckTransaction(in *proto.RiskCheckRequest) (resp *proto.RiskCheckResponse, err error) {
+	// 默认：通过
+	passed := true
+	reason := vars.RiskControlPassed
+
+	var singleLimitAmount *mysql.LimitAmount
+	var dailyLimitAmount *mysql.LimitAmount
+	var limit float64
+
+	switch in.TransactionType {
+	case vars.TransactionTypeWithdraw:
+		singleLimitAmount, err = l.svcCtx.LimitAmountModel.FindOneByAccountTypeLimitType(
+			l.ctx, int64(in.AccountType), vars.RiskControlSingleWithdrawLimit,
+		)
 		if err != nil {
-			return nil, err
+			goto done
 		}
-		dailyLimitAmount, err = l.svcCtx.LimitAmountModel.FindOneByAccountTypeLimitType(l.ctx, int64(in.AccountType), vars.RiskControlDailyWithdrawLimit)
+
+		dailyLimitAmount, err = l.svcCtx.LimitAmountModel.FindOneByAccountTypeLimitType(
+			l.ctx, int64(in.AccountType), vars.RiskControlDailyWithdrawLimit,
+		)
 		if err != nil {
-			return nil, err
+			goto done
 		}
+
 		logx.Debugf("Withdraw - Single Limit: %v, Daily Limit: %v", singleLimitAmount.Amount, dailyLimitAmount.Amount)
+
 		if in.Amount > singleLimitAmount.Amount {
 			passed = false
-			return &proto.RiskCheckResponse{
-				Passed: passed,
-				Reason: vars.RiskControlSingleWithdrawLimit,
-			}, nil
+			reason = vars.RiskControlSingleWithdrawLimit
+			limit = singleLimitAmount.Amount
+			goto done
 		}
+
 		passed, err = l.svcCtx.RedisModel.CheckDailyWithdrawLimit(in.AccountFrom, in.Amount, dailyLimitAmount.Amount)
 		if err != nil {
-			return nil, err
+			goto done
 		}
 		if !passed {
-			return &proto.RiskCheckResponse{
-				Passed: passed,
-				Reason: vars.RiskControlDailyWithdrawLimit,
-			}, nil
+			reason = vars.RiskControlDailyWithdrawLimit
+			limit = dailyLimitAmount.Amount
+			goto done
 		}
-	} else if in.TransactionType == vars.TransactionTypeTransfer {
-		// 转账交易类型的限额检查逻辑
-		singleLimitAmount, err = l.svcCtx.LimitAmountModel.FindOneByAccountTypeLimitType(l.ctx, int64(in.AccountType), vars.RiskControlSingleTransferLimit)
+
+	case vars.TransactionTypeTransfer:
+		singleLimitAmount, err = l.svcCtx.LimitAmountModel.FindOneByAccountTypeLimitType(
+			l.ctx, int64(in.AccountType), vars.RiskControlSingleTransferLimit,
+		)
 		if err != nil {
-			return nil, err
+			goto done
 		}
-		dailyLimitAmount, err = l.svcCtx.LimitAmountModel.FindOneByAccountTypeLimitType(l.ctx, int64(in.AccountType), vars.RiskControlDailyTransferLimit)
+
+		dailyLimitAmount, err = l.svcCtx.LimitAmountModel.FindOneByAccountTypeLimitType(
+			l.ctx, int64(in.AccountType), vars.RiskControlDailyTransferLimit,
+		)
 		if err != nil {
-			return nil, err
+			goto done
 		}
+
 		if in.Amount > singleLimitAmount.Amount {
 			passed = false
-			return &proto.RiskCheckResponse{
-				Passed: passed,
-				Reason: vars.RiskControlSingleTransferLimit,
-			}, nil
+			reason = vars.RiskControlSingleTransferLimit
+			limit = singleLimitAmount.Amount
+			goto done
 		}
+
 		passed, err = l.svcCtx.RedisModel.CheckDailyTransferLimit(in.AccountFrom, in.Amount, dailyLimitAmount.Amount)
+		if err != nil {
+			goto done
+		}
+		if !passed {
+			reason = vars.RiskControlDailyTransferLimit
+			limit = dailyLimitAmount.Amount
+			goto done
+		}
+	}
+
+done:
+	if err != nil {
+		return nil, err
+	}
+	if !passed {
+		_, err = l.svcCtx.RiskRecordModel.Insert(l.ctx, &mysql.RiskRecord{
+			AccountId:     in.AccountFrom,
+			TransactionId: in.TransactionId,
+			RiskType:      int64(reason),
+		})
 		if err != nil {
 			return nil, err
 		}
-		if !passed {
-			return &proto.RiskCheckResponse{
-				Passed: passed,
-				Reason: vars.RiskControlDailyTransferLimit,
-			}, nil
-		}
 	}
-	return &proto.RiskCheckResponse{
-		Passed: true,
-		Reason: vars.RiskControlPassed,
-	}, nil
+	resp = &proto.RiskCheckResponse{
+		Passed: passed,
+		Reason: getReasonString(reason, limit),
+	}
+	return resp, nil
+}
+
+func getReasonString(reason int, amount float64) string {
+	switch reason {
+	case vars.RiskControlSingleWithdrawLimit:
+		return fmt.Sprintf("单笔取款限额超限: %.2f", amount)
+	case vars.RiskControlDailyWithdrawLimit:
+		return fmt.Sprintf("每日取款限额超限: %.2f", amount)
+	case vars.RiskControlSingleTransferLimit:
+		return fmt.Sprintf("单笔转账限额超限: %.2f", amount)
+	case vars.RiskControlDailyTransferLimit:
+		return fmt.Sprintf("每日转账限额超限: %.2f", amount)
+	case vars.RiskControlPassed:
+		return "风控通过"
+	default:
+		return "No risk detected"
+	}
 }

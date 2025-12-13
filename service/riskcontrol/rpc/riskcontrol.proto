@@ -14,7 +14,7 @@ message RiskCheckRequest {
 }
 message RiskCheckResponse {
     bool passed = 1;
-    int32 reason = 2;
+    string reason = 2;
 }
 
 // 风控服务
