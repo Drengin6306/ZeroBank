@@ -28,6 +28,6 @@ type (
 service report-api {
 	@doc "生成报表"
 	@handler getReport
-	post /generate (GenerateReportRequest) returns (GenerateReportResponse)
+	post /download (GenerateReportRequest) returns (GenerateReportResponse)
 }
 

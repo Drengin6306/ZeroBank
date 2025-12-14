@@ -17,7 +17,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				// 生成报表
 				Method:  http.MethodPost,
-				Path:    "/generate",
+				Path:    "/download",
 				Handler: getReportHandler(serverCtx),
 			},
 		},
