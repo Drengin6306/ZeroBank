@@ -12,7 +12,7 @@ type Config struct {
 	Consul    consul.Conf
 	RiskRedis redis.RedConf
 	Cache     cache.CacheConf
-	Mysql     struct {
+	DB        struct {
 		DataSource string
 	}
 }

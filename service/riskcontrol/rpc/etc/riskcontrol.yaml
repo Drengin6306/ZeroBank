@@ -5,7 +5,7 @@ Consul:
   Host: 127.0.0.1:8500
   Key: riskcontrol.rpc
 
-Mysql:
+DB:
   Datasource: root:123456@tcp(localhost:3307)/risk_control?charset=utf8mb4&parseTime=True&loc=Local
 
 RiskRedis:
