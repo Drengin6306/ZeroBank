@@ -1,22 +1,24 @@
-.PHONY: build run stop
+.PHONY: build run stop quickstart
+
+# 定义服务目录
+SERVICES := service/account/api service/account/rpc service/transaction/api service/transaction/rpc service/riskcontrol/rpc service/report/api
 
 # Build the Go application
-# service/account/api/
-# service/account/rpc/
-# service/transaction/api/
-# service/riskcontrol/rpc/
-
 build:
-	cd service/account/api && go build
-	cd service/account/rpc && go build
-	cd service/transaction/api && go build
-	cd service/riskcontrol/rpc && go build
+	@for service in $(SERVICES); do \
+		echo "Building $$service..."; \
+		cd $$service && go build && cd - > /dev/null || exit 1; \
+	done
 
 run:
-	powershell -NoProfile -Command "Start-Process -WorkingDirectory 'service\account\api' -FilePath '.\api.exe'"
-	powershell -NoProfile -Command "Start-Process -WorkingDirectory 'service\account\rpc' -FilePath '.\rpc.exe'"
-	powershell -NoProfile -Command "Start-Process -WorkingDirectory 'service\transaction\api' -FilePath '.\api.exe'"
-	powershell -NoProfile -Command "Start-Process -WorkingDirectory 'service\riskcontrol\rpc' -FilePath '.\rpc.exe'"
+	@for service in $(SERVICES); do \
+		name=$${service##*/}; \
+		exe="$$name.exe"; \
+		echo "Starting $$service..."; \
+		cd $$service && start "" $$exe && cd - > /dev/null; \
+	done
 
 stop:
-	powershell -NoProfile -Command "Get-Process -Name api,rpc -ErrorAction SilentlyContinue | Stop-Process -Force"
+	- powershell -NoProfile -Command "Get-Process -Name api,rpc -ErrorAction SilentlyContinue | Stop-Process -Force"
+
+quickstart: stop build run

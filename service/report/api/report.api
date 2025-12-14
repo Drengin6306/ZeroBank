@@ -1,0 +1,33 @@
+syntax = "v1"
+
+info (
+	title:       "Report Service"
+	description: "报表服务"
+	author:      "Drengin"
+	version:     "v1"
+	wrapCodeMsg: "true"
+)
+
+type (
+	GenerateReportRequest {
+		// 开始日期
+		startDate string `json:"start_date"`
+		// 结束日期
+		endDate string `json:"end_date"`
+	}
+	GenerateReportResponse {
+		// 文件名称
+		fileName string `json:"file_name"`
+	}
+)
+
+@server (
+	prefix: /v1
+	jwt:    Auth
+)
+service report-api {
+	@doc "生成报表"
+	@handler getReport
+	post /generate (GenerateReportRequest) returns (GenerateReportResponse)
+}
+
