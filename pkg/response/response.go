@@ -14,7 +14,7 @@ func Success(w http.ResponseWriter, data interface{}) {
 }
 
 func Error(w http.ResponseWriter, err error) {
-	if e := err.(*errorx.ResponseError); e != nil {
+	if e, ok := err.(*errorx.ResponseError); ok {
 		httpx.WriteJson(w, http.StatusOK, e)
 		return
 	}
