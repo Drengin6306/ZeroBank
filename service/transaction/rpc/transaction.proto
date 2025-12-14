@@ -1,0 +1,33 @@
+syntax = "proto3";
+package transaction;
+
+option go_package = "/proto";
+
+// 交易流水查询
+message TransactionRequest {
+  // 用户ID
+  string  account_id    = 1;
+  // 开始时间
+  string start_date = 2;
+  // 结束时间
+  string end_date   = 3;
+}
+message TransactionResponse {
+  // 交易流水列表
+  repeated Record transactions = 1;
+}
+
+message Record {
+  string          transaction_id   = 1;
+  string          account_from     = 2;
+  optional string account_to       = 3;
+  int32           transaction_type = 4;
+  double          amount           = 5;
+  string          created_at       = 6;
+}
+
+// 交易流水服务
+service Transaction {
+  // 获取交易流水
+  rpc GetTransactions (TransactionRequest) returns (TransactionResponse);
+}

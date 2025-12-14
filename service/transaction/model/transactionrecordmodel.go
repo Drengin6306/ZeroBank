@@ -1,6 +1,11 @@
 package model
 
-import "github.com/zeromicro/go-zero/core/stores/sqlx"
+import (
+	"context"
+	"time"
+
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
+)
 
 var _ TransactionRecordModel = (*customTransactionRecordModel)(nil)
 
@@ -10,6 +15,7 @@ type (
 	TransactionRecordModel interface {
 		transactionRecordModel
 		withSession(session sqlx.Session) TransactionRecordModel
+		FindRange(ctx context.Context, account string, startTime, endTime time.Time) ([]*TransactionRecord, error)
 	}
 
 	customTransactionRecordModel struct {
