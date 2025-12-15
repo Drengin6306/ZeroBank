@@ -14,7 +14,6 @@ const (
 	ErrForbidden                            // 权限不足禁止访问
 	ErrNotFound                             // 资源不存在
 	ErrServerBusy                           // 服务器繁忙
-	ErrCustomerExists                       // 客户已存在
 	ErrUnknown                              // 未知错误
 
 	// 业务错误
@@ -24,4 +23,5 @@ const (
 	ErrTargetInvalid                          // 目标账户异常
 	ErrAccountLimit                           // 账户限额
 	ErrRiskControl                            // 风控拒绝
+	ErrCustomerExists                         // 客户已存在
 )
