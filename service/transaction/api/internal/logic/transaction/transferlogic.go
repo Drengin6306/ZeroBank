@@ -74,7 +74,7 @@ func (l *TransferLogic) Transfer(req *types.TransferRequest) (resp *types.Transf
 	}
 	if !riskResp.Passed {
 		// 交易单号加拒绝原因
-		msg := "TransactionID: " + transactionID + ", Reason: " + riskResp.Reason
+		msg := riskResp.Reason + " (交易流水号: " + transactionID + ")"
 		return nil, errorx.NewErrorWithMsg(errorx.ErrRiskControl, msg)
 	}
 	_, err = l.svcCtx.AccountRpc.DeductBalance(l.ctx, &account.DeductBalanceRequest{
