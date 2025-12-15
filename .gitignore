@@ -36,3 +36,6 @@ log/
 
 # temp files
 temp/
+
+# data files
+data/

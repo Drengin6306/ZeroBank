@@ -1,20 +1,15 @@
 Name: riskcontrol.rpc
-ListenOn: 0.0.0.0:9002
+ListenOn: 0.0.0.0:9003
 
 Consul:
-  Host: 127.0.0.1:8500
+  Host: consul:8500
   Key: riskcontrol.rpc
 
 DB:
-  Datasource: root:123456@tcp(localhost:3307)/risk_control?charset=utf8mb4&parseTime=True&loc=Local
+  DataSource: root:123456@tcp(mysql:3306)/risk_control?charset=utf8mb4&parseTime=True&loc=Local
 
 RiskRedis:
-  Host: localhost:6379
+  Host: redis:6379
 
 Cache:
-  - Host: localhost:6379
-
-Log:
-  Level: debug
-  Mode: file
-  Path: ./log
+  - Host: redis:6379

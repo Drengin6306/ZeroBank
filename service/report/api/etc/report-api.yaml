@@ -4,13 +4,9 @@ Port: 8003
 
 RPC:
   Transaction:
-    Target: consul://127.0.0.1:8500/transaction.rpc
+    Target: consul://consul:8500/transaction.rpc
 
 Auth:
   AccessSecret: "my-secret"
   AccessExpire: 86400
 
-Log:
-  Level: debug
-  Mode: file
-  Path: ./log

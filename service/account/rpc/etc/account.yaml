@@ -2,13 +2,8 @@ Name: account.rpc
 ListenOn: 0.0.0.0:9001
 
 Consul:
-  Host: 127.0.0.1:8500
+  Host: consul:8500
   Key: account.rpc
 
 DB:
-  DataSource: root:123456@tcp(127.0.0.1:3307)/account?charset=utf8mb4&parseTime=True&loc=Local
-
-Log:
-  Level: debug
-  Mode: file
-  Path: ./log
+  DataSource: root:123456@tcp(mysql:3306)/account?charset=utf8mb4&parseTime=True&loc=Local

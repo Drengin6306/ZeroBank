@@ -3,7 +3,7 @@ Host: 0.0.0.0
 Port: 8002
 
 DB:
-  DataSource: root:123456@tcp(127.0.0.1:3307)/transaction?charset=utf8mb4&parseTime=True&loc=Local
+  DataSource: root:123456@tcp(mysql:3306)/transaction?charset=utf8mb4&parseTime=True&loc=Local
 
 Auth:
   AccessSecret: "my-secret"
@@ -11,11 +11,7 @@ Auth:
 
 RPC:
   Account:
-    Target: consul://127.0.0.1:8500/account.rpc
+    Target: consul://consul:8500/account.rpc
   RiskControl:
-    Target: consul://127.0.0.1:8500/riskcontrol.rpc
+    Target: consul://consul:8500/riskcontrol.rpc
 
-Log:
-  Level: debug
-  Mode: file
-  Path: ./log
