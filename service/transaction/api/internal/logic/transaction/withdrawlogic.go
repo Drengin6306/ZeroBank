@@ -60,7 +60,7 @@ func (l *WithdrawLogic) Withdraw(req *types.WithdrawRequest) (resp *types.Withdr
 	}
 	if !riskResp.Passed {
 		// 交易单号加拒绝原因
-		msg := "TransactionID: " + transactionID + ", Reason: " + riskResp.Reason
+		msg := riskResp.Reason + " (交易流水号: " + transactionID + ")"
 		return nil, errorx.NewErrorWithMsg(errorx.ErrRiskControl, msg)
 	}
 	result, err := l.svcCtx.AccountRpc.DeductBalance(l.ctx, &account.DeductBalanceRequest{
