@@ -67,6 +67,8 @@ func (l *RegisterLogic) Register(req *types.CustomerRegisterRequest) (resp *type
 		}
 	} else if err != nil {
 		return nil, err
+	} else {
+		return nil, errorx.NewErrorWithMsg(errorx.ErrCustomerExists, "该身份证号已被注册")
 	}
 
 	// 创建账户

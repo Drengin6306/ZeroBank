@@ -58,9 +58,16 @@ func (l *EnterpriseRegisterLogic) EnterpriseRegister(req *types.EnterpriseRegist
 		Phone:       phoneNum,
 		Email:       req.Email,
 	}
-	_, err = l.svcCtx.CustomerEnterpriseModel.Insert(l.ctx, enterprise)
-	if err != nil {
+	_, err = l.svcCtx.CustomerEnterpriseModel.FindOne(l.ctx, req.CreditCode)
+	if err == model.ErrNotFound {
+		_, err = l.svcCtx.CustomerEnterpriseModel.Insert(l.ctx, enterprise)
+		if err != nil {
+			return nil, err
+		}
+	} else if err != nil {
 		return nil, err
+	} else {
+		return nil, errorx.NewErrorWithMsg(errorx.ErrCustomerExists, "该企业信用代码已被注册")
 	}
 	accountID := idgen.GenAccountID()
 	account := &model.Account{
