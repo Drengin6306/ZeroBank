@@ -47,6 +47,9 @@ func (l *EnterpriseRegisterLogic) EnterpriseRegister(req *types.EnterpriseRegist
 	if err != nil {
 		return nil, err
 	}
+	if IsValidEmail(req.Email) == false {
+		return nil, errorx.NewErrorWithMsg(errorx.ErrInvalidParams, "邮箱格式错误")
+	}
 	enterprise := &model.CustomerEnterprise{
 		CompanyName: req.Name,
 		CreditCode:  req.CreditCode,

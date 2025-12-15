@@ -48,6 +48,9 @@ func (l *RegisterLogic) Register(req *types.CustomerRegisterRequest) (resp *type
 	if err != nil {
 		return nil, err
 	}
+	if IsValidEmail(req.Email) == false {
+		return nil, errorx.NewErrorWithMsg(errorx.ErrInvalidParams, "邮箱格式错误")
+	}
 	customer := &model.CustomerIndividual{
 		IdCard: req.IdCard,
 		Name:   req.Name,
