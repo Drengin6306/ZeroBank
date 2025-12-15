@@ -64,6 +64,7 @@ func (l *EnterpriseRegisterLogic) EnterpriseRegister(req *types.EnterpriseRegist
 		AccountId:   accountID,
 		Password:    password.Encrypt(req.Password),
 		AccountType: vars.AccountTypeEnterprise,
+		CustomerId:  req.CreditCode,
 		Status:      vars.AccountStatusActive,
 	}
 	_, err = l.svcCtx.AccountModel.Insert(l.ctx, account)
