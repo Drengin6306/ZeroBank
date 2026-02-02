@@ -47,3 +47,14 @@ func (s *AccountServer) IsAccountExist(ctx context.Context, in *proto.AccountInf
 	l := logic.NewIsAccountExistLogic(ctx, s.svcCtx)
 	return l.IsAccountExist(in)
 }
+
+// DTM 补偿接口
+func (s *AccountServer) CompensateDeduct(ctx context.Context, in *proto.CompensateDeductRequest) (*proto.CompensateDeductResponse, error) {
+	l := logic.NewCompensateDeductLogic(ctx, s.svcCtx)
+	return l.CompensateDeduct(in)
+}
+
+func (s *AccountServer) CompensateAdd(ctx context.Context, in *proto.CompensateAddRequest) (*proto.CompensateAddResponse, error) {
+	l := logic.NewCompensateAddLogic(ctx, s.svcCtx)
+	return l.CompensateAdd(in)
+}

@@ -1,4 +1,4 @@
-.PHONY: build run stop quickstart
+.PHONY: build run stop quickstart config-local config-docker
 
 # 定义服务目录
 SERVICES := service/account/api service/account/rpc service/transaction/api service/transaction/rpc service/riskcontrol/rpc service/report/api
@@ -10,7 +10,16 @@ build:
 		cd $$service && go build && cd - > /dev/null || exit 1; \
 	done
 
-run:
+# 切换到本地配置
+config-local:
+	@powershell -NoProfile -ExecutionPolicy Bypass -File deploy/scripts/config-local.ps1
+
+# 恢复 Docker 配置
+config-docker:
+	@powershell -NoProfile -ExecutionPolicy Bypass -File deploy/scripts/config-docker.ps1
+
+# 本地运行（自动切换配置）
+run: config-local
 	@for service in $(SERVICES); do \
 		name=$${service##*/}; \
 		exe="$$name.exe"; \
@@ -18,8 +27,10 @@ run:
 		cd $$service && start "" $$exe && cd - > /dev/null; \
 	done
 
+# 停止服务（自动恢复 Docker 配置）
 stop:
 	- powershell -NoProfile -Command "Get-Process -Name api,rpc -ErrorAction SilentlyContinue | Stop-Process -Force"
+	@$(MAKE) config-docker
 
 quickstart: stop build run
 

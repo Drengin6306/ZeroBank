@@ -15,3 +15,6 @@ RPC:
   RiskControl:
     Target: consul://consul:8500/riskcontrol.rpc
 
+DTM:
+  Server: dtm:36790
+

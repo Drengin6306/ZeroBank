@@ -21,4 +21,7 @@ type Config struct {
 		Account     zrpc.RpcClientConf
 		RiskControl zrpc.RpcClientConf
 	}
+	DTM struct {
+		Server string // DTM 服务器地址
+	}
 }

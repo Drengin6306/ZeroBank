@@ -10,22 +10,23 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
-type AddBalanceLogic struct {
+type CompensateAddLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewAddBalanceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddBalanceLogic {
-	return &AddBalanceLogic{
+func NewCompensateAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CompensateAddLogic {
+	return &CompensateAddLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *AddBalanceLogic) AddBalance(in *proto.AddBalanceRequest) (*proto.AddBalanceResponse, error) {
-	var resp *proto.AddBalanceResponse
+// CompensateAdd 收款补偿：将之前增加的金额扣回去
+func (l *CompensateAddLogic) CompensateAdd(in *proto.CompensateAddRequest) (*proto.CompensateAddResponse, error) {
+	var resp *proto.CompensateAddResponse
 
 	// 使用事务和悲观锁保证并发安全
 	err := l.svcCtx.AccountModel.Trans(l.ctx, func(ctx context.Context, session sqlx.Session) error {
@@ -35,8 +36,8 @@ func (l *AddBalanceLogic) AddBalance(in *proto.AddBalanceRequest) (*proto.AddBal
 			return err
 		}
 
-		// 增加余额
-		account.Balance += in.Amount
+		// 补偿：扣回之前增加的金额
+		account.Balance -= in.Amount
 
 		// 使用事务内的 session 更新账户信息
 		err = l.svcCtx.AccountModel.WithSession(session).Update(ctx, account)
@@ -44,7 +45,7 @@ func (l *AddBalanceLogic) AddBalance(in *proto.AddBalanceRequest) (*proto.AddBal
 			return err
 		}
 
-		resp = &proto.AddBalanceResponse{
+		resp = &proto.CompensateAddResponse{
 			AccountId: account.AccountId,
 			Balance:   account.Balance,
 		}

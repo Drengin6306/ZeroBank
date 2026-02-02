@@ -68,6 +68,25 @@ message IsAccountExistResponse {
   bool exist = 1;
 }
 
+// DTM 补偿接口请求响应
+message CompensateDeductRequest {
+  string account_id = 1;
+  double amount = 2;
+}
+message CompensateDeductResponse {
+  string account_id = 1;
+  double balance = 2;
+}
+
+message CompensateAddRequest {
+  string account_id = 1;
+  double amount = 2;
+}
+message CompensateAddResponse {
+  string account_id = 1;
+  double balance = 2;
+}
+
 service Account {
   rpc GetAccountInfo(AccountInfoRequest) returns (AccountInfoResponse);
   rpc QueryAccountBalance(QueryAccountBalanceRequest)
@@ -76,4 +95,8 @@ service Account {
   rpc DeductBalance(DeductBalanceRequest) returns (DeductBalanceResponse);
   rpc AddBalance(AddBalanceRequest) returns (AddBalanceResponse);
   rpc IsAccountExist(AccountInfoRequest) returns (IsAccountExistResponse);
+  
+  // DTM 补偿接口
+  rpc CompensateDeduct(CompensateDeductRequest) returns (CompensateDeductResponse);
+  rpc CompensateAdd(CompensateAddRequest) returns (CompensateAddResponse);
 }

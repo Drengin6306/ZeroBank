@@ -39,3 +39,11 @@ temp/
 
 # data files
 data/
+
+# OS specific
+.DS_Store
+
+
+# Generated binaries (Linux/Mac)
+service/*/api/*-api
+service/*/rpc/*-rpc

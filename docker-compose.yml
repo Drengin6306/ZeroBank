@@ -35,6 +35,27 @@ services:
       - zerobank_net
     restart: unless-stopped
 
+  dtm:
+    image: yedf/dtm:latest
+    container_name: zerobank_dtm
+    environment:
+      STORE_DRIVER: mysql
+      STORE_HOST: mysql
+      STORE_PORT: 3306
+      STORE_USER: root
+      STORE_PASSWORD: 123456
+      # 注意：DTM 官方镜像不支持 Consul 驱动
+      # 使用默认配置，通过 Docker 网络直接访问服务
+    ports:
+      - "36789:36789"  # HTTP 端口
+      - "36790:36790"  # gRPC 端口
+    depends_on:
+      - mysql
+      - consul
+    networks:
+      - zerobank_net
+    restart: unless-stopped
+
   nginx:
     image: nginx:latest
     container_name: zerobank_nginx
@@ -81,6 +102,7 @@ services:
     depends_on:
       - mysql
       - consul
+      - dtm
     networks:
       - zerobank_net
     restart: unless-stopped

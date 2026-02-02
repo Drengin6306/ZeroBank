@@ -37,15 +37,15 @@ func (l *WithdrawLogic) Withdraw(req *types.WithdrawRequest) (resp *types.Withdr
 		return nil, errorx.NewError(errorx.ErrInvalidParams)
 	}
 	accountID := l.ctx.Value(vars.AccountKey).(string)
+
+	// 获取账户信息用于风控检查
 	info, err := l.svcCtx.AccountRpc.GetAccountInfo(l.ctx, &account.AccountInfoRequest{
 		AccountId: accountID,
 	})
 	if err != nil {
 		return nil, err
 	}
-	if info.GetBalance() < req.Amount {
-		return nil, errorx.NewError(errorx.ErrBalanceNotEnough)
-	}
+
 	transactionID := idgen.GenTransactionID()
 	// 风控检查
 	riskResp, err := l.svcCtx.RiskControlRpc.CheckTransaction(l.ctx, &riskcontrol.RiskCheckRequest{
@@ -63,6 +63,8 @@ func (l *WithdrawLogic) Withdraw(req *types.WithdrawRequest) (resp *types.Withdr
 		msg := riskResp.Reason + " (交易流水号: " + transactionID + ")"
 		return nil, errorx.NewErrorWithMsg(errorx.ErrRiskControl, msg)
 	}
+
+	// DeductBalance 内部已使用悲观锁和余额检查，确保事务安全
 	result, err := l.svcCtx.AccountRpc.DeductBalance(l.ctx, &account.DeductBalanceRequest{
 		AccountId: accountID,
 		Amount:    req.Amount,

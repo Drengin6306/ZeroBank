@@ -18,6 +18,10 @@ type (
 	AccountInfoResponse         = proto.AccountInfoResponse
 	AddBalanceRequest           = proto.AddBalanceRequest
 	AddBalanceResponse          = proto.AddBalanceResponse
+	CompensateAddRequest        = proto.CompensateAddRequest
+	CompensateAddResponse       = proto.CompensateAddResponse
+	CompensateDeductRequest     = proto.CompensateDeductRequest
+	CompensateDeductResponse    = proto.CompensateDeductResponse
 	CustomerUserInfo            = proto.CustomerUserInfo
 	DeductBalanceRequest        = proto.DeductBalanceRequest
 	DeductBalanceResponse       = proto.DeductBalanceResponse
@@ -32,6 +36,9 @@ type (
 		DeductBalance(ctx context.Context, in *DeductBalanceRequest, opts ...grpc.CallOption) (*DeductBalanceResponse, error)
 		AddBalance(ctx context.Context, in *AddBalanceRequest, opts ...grpc.CallOption) (*AddBalanceResponse, error)
 		IsAccountExist(ctx context.Context, in *AccountInfoRequest, opts ...grpc.CallOption) (*IsAccountExistResponse, error)
+		// DTM 补偿接口
+		CompensateDeduct(ctx context.Context, in *CompensateDeductRequest, opts ...grpc.CallOption) (*CompensateDeductResponse, error)
+		CompensateAdd(ctx context.Context, in *CompensateAddRequest, opts ...grpc.CallOption) (*CompensateAddResponse, error)
 	}
 
 	defaultAccount struct {
@@ -68,4 +75,15 @@ func (m *defaultAccount) AddBalance(ctx context.Context, in *AddBalanceRequest, 
 func (m *defaultAccount) IsAccountExist(ctx context.Context, in *AccountInfoRequest, opts ...grpc.CallOption) (*IsAccountExistResponse, error) {
 	client := proto.NewAccountClient(m.cli.Conn())
 	return client.IsAccountExist(ctx, in, opts...)
+}
+
+// DTM 补偿接口
+func (m *defaultAccount) CompensateDeduct(ctx context.Context, in *CompensateDeductRequest, opts ...grpc.CallOption) (*CompensateDeductResponse, error) {
+	client := proto.NewAccountClient(m.cli.Conn())
+	return client.CompensateDeduct(ctx, in, opts...)
+}
+
+func (m *defaultAccount) CompensateAdd(ctx context.Context, in *CompensateAddRequest, opts ...grpc.CallOption) (*CompensateAddResponse, error) {
+	client := proto.NewAccountClient(m.cli.Conn())
+	return client.CompensateAdd(ctx, in, opts...)
 }
